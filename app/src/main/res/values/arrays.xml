@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="apptour">
+        <item>@drawable/ace_clubs_white_png</item>
+        <item>@drawable/ace_diamonds_white_png</item>
+        <item>@drawable/ace_hearts_white_png</item>
+        <item>@drawable/ace_spades_white_png</item>
+        <item>@drawable/clubs_white_2_png</item>
+        <item>@drawable/diamonds_white_2_png</item>
+        <item>@drawable/hearts_white_2_png</item>
+        <item>@drawable/spades_white_2_png</item>
+    </array>
+
+</resources>

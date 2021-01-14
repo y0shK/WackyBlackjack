@@ -1,10 +1,16 @@
 package com.example.power_upblackjack;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetManager;
+import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -34,6 +40,7 @@ public class GameScreen extends AppCompatActivity {
         Intent playGameIntent = getIntent();
     }
 
+    /*
     // https://stackoverflow.com/questions/3571223/how-do-i-get-the-file-extension-of-a-file-in-java
     public static String getFileExtension(File file) {
         String name = file.getName();
@@ -45,7 +52,7 @@ public class GameScreen extends AppCompatActivity {
     }
 
     // https://stackoverflow.com/questions/5259872/building-an-array-of-files-in-a-directory
-    public static String[] getAllCardsOld(String dirPath) {
+    public static Drawable[] getAllCardsOld(String dirPath) {
 
         // create a new object of type File with the provided directory string
         File dir = new File(dirPath);
@@ -63,7 +70,7 @@ public class GameScreen extends AppCompatActivity {
                 }
             }
         }
-        String[] pngFilesArray = pngFiles.toArray(new String[]{});
+        Drawable[] pngFilesArray = pngFiles.toArray(new Drawable[]{});
         return pngFilesArray;
     }
 
@@ -79,7 +86,7 @@ public class GameScreen extends AppCompatActivity {
         {
             // drawable's id added to arraylist
             try {
-                drawableResources.add(ResourcesCompat.getDrawable(getResources(), field.getInt(null), null));
+                //drawableResources.add(field.get);
             }
             catch (Exception e) {
                 e.printStackTrace();
@@ -87,15 +94,19 @@ public class GameScreen extends AppCompatActivity {
         }
         return drawableResources;
     }
+    */
 
     public void dealCards(View view) {
-        ArrayList<Drawable> totalCards = getAllCards();
+        ImageView img = ((ImageView)findViewById(R.id.playerCard1));
 
-        /*
-        for (Drawable drawableElement : totalCards) {
-            ((ImageView)findViewById(R.id.playerCard1)).setImageResource(drawableElement);
-        } */
+        // take the values from arrays.xml and create a TypedArray
+        // then select a random array element and set the image resource accordingly
+        // recycle the TypedArray - doing so is good practice
 
-        ((ImageView)findViewById(R.id.playerCard1)).setImageDrawable(totalCards.get(26));
+        // https://stackoverflow.com/questions/3497074/how-to-select-from-resources-randomly-r-drawable-xxxx
+        TypedArray images = getResources().obtainTypedArray(R.array.apptour);
+        int choice = (int) (Math.random() * images.length());
+        img.setImageResource(images.getResourceId(choice, R.drawable.ace_clubs_white_png));
+        images.recycle(); // https://stackoverflow.com/questions/21354501/typed-array-should-be-recycled-after-use-with-recycle
     }
 }
