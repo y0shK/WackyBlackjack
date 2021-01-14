@@ -6,4 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".GameScreen">
 
+    <ImageView
+        android:id="@+id/playerCard1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="178dp"
+        android:onClick="dealCards"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ace_clubs_white_png" />
 </androidx.constraintlayout.widget.ConstraintLayout>
