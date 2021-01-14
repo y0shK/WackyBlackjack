@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Wacky Blackjack</string>
+    <string name="play_game_button">Play Game</string>
+    <string name="options">Options</string>
+</resources>
