@@ -40,6 +40,15 @@ public class GameScreen extends AppCompatActivity {
         Intent playGameIntent = getIntent();
     }
 
+    // https://stackoverflow.com/questions/18703841/call-method-on-activity-load-android
+    @Override
+    protected void onStart()
+    {
+        super.onStart();
+        getRandomCard();
+    }
+
+
     /*
     // https://stackoverflow.com/questions/3571223/how-do-i-get-the-file-extension-of-a-file-in-java
     public static String getFileExtension(File file) {
@@ -96,8 +105,9 @@ public class GameScreen extends AppCompatActivity {
     }
     */
 
-    public void dealCards(View view) {
-        ImageView img = ((ImageView)findViewById(R.id.playerCard1));
+    public void getRandomCard() {
+        ImageView img1 = ((ImageView)findViewById(R.id.playerCard1));
+        ImageView img2 = ((ImageView)findViewById(R.id.playerCard2));
 
         // take the values from arrays.xml and create a TypedArray
         // then select a random array element and set the image resource accordingly
@@ -105,8 +115,63 @@ public class GameScreen extends AppCompatActivity {
 
         // https://stackoverflow.com/questions/3497074/how-to-select-from-resources-randomly-r-drawable-xxxx
         TypedArray images = getResources().obtainTypedArray(R.array.apptour);
-        int choice = (int) (Math.random() * images.length());
-        img.setImageResource(images.getResourceId(choice, R.drawable.ace_clubs_white_png));
+        int choice1 = (int) (Math.random() * images.length());
+        int choice2 = (int) (Math.random() * images.length());
+
+        img1.setImageResource(images.getResourceId(choice1, R.drawable.back_red_basic)); // random png
+        img2.setImageResource(images.getResourceId(choice2, R.drawable.back_red_basic)); // random png
+
+        img1.setTag(images.getResourceId(choice1, R.drawable.back_red_basic));
+        img2.setTag(images.getResourceId(choice2, R.drawable.back_red_basic));
+
+        // figure out the cumulative value of each of the player's cards
+
+        String cardValue1 = images.getString(choice1);
+        String cardValue2 = images.getString(choice2);
+        int runningCount = 0;
+
+        String[] valueNum = {"2", "3", "4", "5", "6", "7", "8", "9", "10"};
+        String[] valueFace = {"jack", "queen", "king"};
+
+        for (String value : valueNum) {
+            if (cardValue1.contains(value)) {
+                runningCount += Integer.parseInt(value);
+            }
+            if (cardValue2.contains(value)) {
+                runningCount += Integer.parseInt(value);
+            }
+        }
+
+        for (String value : valueFace) {
+            if (cardValue1.contains(value)) {
+                runningCount += 10; // jack, queen, and king are all 10
+            }
+            if (cardValue2.contains(value)) {
+                runningCount += 10;
+            }
+        }
+
+        // for ace, it counts as 11 unless it would bust ( > 21), in which case it counts as 1
+        if (cardValue1.contains("ace")) {
+            if ((runningCount + 11) <= 21) {
+                runningCount += 11;
+            }
+            else { // > 21
+                runningCount += 1;
+            }
+        }
+        if (cardValue2.contains("ace")) {
+            if ((runningCount + 11) <= 21) {
+                runningCount += 11;
+            }
+            else { // > 21
+                runningCount += 1;
+            }
+        }
+
+        System.out.println(runningCount);
+
         images.recycle(); // https://stackoverflow.com/questions/21354501/typed-array-should-be-recycled-after-use-with-recycle
     }
+
 }

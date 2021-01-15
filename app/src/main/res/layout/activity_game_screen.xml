@@ -10,10 +10,20 @@
         android:id="@+id/playerCard1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="178dp"
-        android:onClick="dealCards"
+        android:layout_marginStart="128dp"
+        android:layout_marginBottom="96dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/ace_clubs_white_png" />
+        app:srcCompat="@drawable/back_red_basic" />
+
+    <ImageView
+        android:id="@+id/playerCard2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="128dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/playerCard1"
+        app:srcCompat="@drawable/back_red_basic" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

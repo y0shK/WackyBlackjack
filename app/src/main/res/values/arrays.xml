@@ -10,6 +10,51 @@
         <item>@drawable/diamonds_white_2_png</item>
         <item>@drawable/hearts_white_2_png</item>
         <item>@drawable/spades_white_2_png</item>
+        <item>@drawable/clubs_white_3_png</item>
+        <item>@drawable/diamonds_white_3_png</item>
+        <item>@drawable/hearts_white_3_png</item>
+        <item>@drawable/spades_white_3_png</item>
+        <item>@drawable/clubs_white_4_png</item>
+        <item>@drawable/diamonds_white_4_png</item>
+        <item>@drawable/hearts_white_4_png</item>
+        <item>@drawable/spades_white_4_png</item>
+        <item>@drawable/clubs_white_5_png</item>
+        <item>@drawable/diamonds_white_5_png</item>
+        <item>@drawable/hearts_white_5_png</item>
+        <item>@drawable/spades_white_5_png</item>
+        <item>@drawable/clubs_white_6_png</item>
+        <item>@drawable/diamonds_white_6_png</item>
+        <item>@drawable/hearts_white_6_png</item>
+        <item>@drawable/spades_white_6_png</item>
+        <item>@drawable/clubs_white_7_png</item>
+        <item>@drawable/diamonds_white_7_png</item>
+        <item>@drawable/hearts_white_7_png</item>
+        <item>@drawable/spades_white_7_png</item>
+        <item>@drawable/clubs_white_8_png</item>
+        <item>@drawable/diamonds_white_8_png</item>
+        <item>@drawable/hearts_white_8_png</item>
+        <item>@drawable/spades_white_8_png</item>
+        <item>@drawable/clubs_white_9_png</item>
+        <item>@drawable/diamonds_white_9_png</item>
+        <item>@drawable/hearts_white_9_png</item>
+        <item>@drawable/spades_white_9_png</item>
+        <item>@drawable/clubs_white_10_png</item>
+        <item>@drawable/diamonds_white_10_png</item>
+        <item>@drawable/hearts_white_10_png</item>
+        <item>@drawable/spades_white_10_png</item>
+        <item>@drawable/jack_clubs_white_png</item>
+        <item>@drawable/jack_diamonds_white_png</item>
+        <item>@drawable/jack_hearts_white_png</item>
+        <item>@drawable/jack_spades_white_png</item>
+        <item>@drawable/queen_clubs_white_png</item>
+        <item>@drawable/queen_diamonds_white_png</item>
+        <item>@drawable/queen_hearts_white_png</item>
+        <item>@drawable/queen_spades_white_png</item>
+        <item>@drawable/king_clubs_white_png</item>
+        <item>@drawable/king_diamonds_white_png</item>
+        <item>@drawable/king_hearts_white_png</item>
+        <item>@drawable/king_spades_white_png</item>
+
     </array>
 
 </resources>
