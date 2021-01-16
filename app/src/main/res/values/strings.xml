@@ -2,5 +2,5 @@
     <string name="app_name">Wacky Blackjack</string>
     <string name="play_game_button">Play Game</string>
     <string name="options">Options</string>
-    <string name="running_count">Hello</string>
+    <string name="running_count">0</string>
 </resources>

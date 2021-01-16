@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.File;
 import java.lang.reflect.Array;
@@ -46,6 +47,7 @@ public class GameScreen extends AppCompatActivity {
     {
         super.onStart();
         getRandomCard();
+        //trackRunningCount();
     }
 
 
@@ -124,14 +126,20 @@ public class GameScreen extends AppCompatActivity {
         img1.setTag(images.getResourceId(choice1, R.drawable.back_red_basic));
         img2.setTag(images.getResourceId(choice2, R.drawable.back_red_basic));
 
+        trackRunningCount(images, choice1, choice2);
+
+        images.recycle(); // https://stackoverflow.com/questions/21354501/typed-array-should-be-recycled-after-use-with-recycle
+    }
+
+    public void trackRunningCount(TypedArray imagesProvided, int choice1Param, int choice2Param) {
         // figure out the cumulative value of each of the player's cards
 
-        String cardValue1 = images.getString(choice1);
-        String cardValue2 = images.getString(choice2);
+        String cardValue1 = imagesProvided.getString(choice1Param);
+        String cardValue2 = imagesProvided.getString(choice2Param);
         int runningCount = 0;
 
         String[] valueNum = {"2", "3", "4", "5", "6", "7", "8", "9", "10"};
-        String[] valueFace = {"jack", "queen", "king"};
+        String[] valueFace = {"jack", "queen", "king"}; // not ace - dealt with separately
 
         for (String value : valueNum) {
             if (cardValue1.contains(value)) {
@@ -169,9 +177,11 @@ public class GameScreen extends AppCompatActivity {
             }
         }
 
-        System.out.println(runningCount);
+        String runningCountStr = Integer.toString(runningCount);
 
-        images.recycle(); // https://stackoverflow.com/questions/21354501/typed-array-should-be-recycled-after-use-with-recycle
+        TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
+        textViewToChange.setText(runningCountStr);
+
     }
 
 }

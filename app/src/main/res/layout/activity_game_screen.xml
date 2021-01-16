@@ -26,4 +26,18 @@
         app:layout_constraintStart_toEndOf="@+id/playerCard1"
         app:srcCompat="@drawable/back_red_basic" />
 
+    <TextView
+        android:id="@+id/runningCountTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="128dp"
+        android:layout_marginEnd="128dp"
+        android:layout_marginBottom="32dp"
+        android:text="@string/running_count"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
