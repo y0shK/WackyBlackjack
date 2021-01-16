@@ -3,4 +3,6 @@
     <string name="play_game_button">Play Game</string>
     <string name="options">Options</string>
     <string name="running_count">0</string>
+    <string name="hit_card">Hit</string>
+    <string name="stand_card">Stand</string>
 </resources>

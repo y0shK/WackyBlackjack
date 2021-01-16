@@ -1,6 +1,7 @@
 package com.example.power_upblackjack;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 
@@ -107,7 +108,7 @@ public class GameScreen extends AppCompatActivity {
     }
     */
 
-    public void getRandomCard() {
+    public TypedArray getRandomCard() {
         ImageView img1 = ((ImageView)findViewById(R.id.playerCard1));
         ImageView img2 = ((ImageView)findViewById(R.id.playerCard2));
 
@@ -129,6 +130,8 @@ public class GameScreen extends AppCompatActivity {
         trackRunningCount(images, choice1, choice2);
 
         images.recycle(); // https://stackoverflow.com/questions/21354501/typed-array-should-be-recycled-after-use-with-recycle
+
+        return images;
     }
 
     public void trackRunningCount(TypedArray imagesProvided, int choice1Param, int choice2Param) {
@@ -181,6 +184,18 @@ public class GameScreen extends AppCompatActivity {
 
         TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
         textViewToChange.setText(runningCountStr);
+
+    }
+
+    public void addCard() {
+        ImageView newCard = new ImageView(GameScreen.this);
+        ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
+
+        TypedArray newCardImages = getRandomCard();
+        int newCardChoice = (int) (Math.random() * newCardImages.length());
+
+        newCard.setImageResource(newCardImages.getResourceId(newCardChoice, R.drawable.back_red_basic)); // random png
+        cl.addView(newCard);
 
     }
 
