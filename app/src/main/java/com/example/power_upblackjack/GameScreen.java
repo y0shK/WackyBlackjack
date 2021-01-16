@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,6 +27,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class GameScreen extends AppCompatActivity {
+
+    int clickCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,58 @@ public class GameScreen extends AppCompatActivity {
         setContentView(R.layout.activity_game_screen);
 
         Intent playGameIntent = getIntent();
+
+        // https://stackoverflow.com/questions/23805711/trying-to-create-imageview-when-click-the-button
+        ImageView redChip = (ImageView) findViewById(R.id.redPokerChipNoBg);
+        redChip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // https://stackoverflow.com/questions/17417571/how-many-times-a-button-is-clicked-in-android
+                clickCount = clickCount + 1;
+
+                ImageView newCard = new ImageView(GameScreen.this);
+                ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
+
+                int card3XCoor = 415;
+                int card3YCoor = 712;
+                int xShift = 0;
+
+                //FIXME keep adding space between cards until >= 21
+
+                // first card drawn - 3rd overall
+                if (clickCount == 1) {
+
+                }
+                else if (clickCount == 2) { // hit more than once
+                    xShift += 10; //FIXME
+                    // y coordinate stays the same
+                }
+                else if (clickCount == 3) {
+                    xShift += 20; //FIXME
+                }
+                else if (clickCount == 4) {
+                    xShift += 30;
+                }
+                else if (clickCount == 5) {
+                    xShift += 40;
+                }
+                card3XCoor += xShift;
+                clickCount += 1;
+
+                newCard.setX(card3XCoor + xShift);
+                newCard.setY(card3YCoor);
+
+                TypedArray images = getResources().obtainTypedArray(R.array.apptour);
+                int choice = (int) (Math.random() * images.length());
+
+                newCard.setImageResource(images.getResourceId(choice, R.drawable.back_red_basic)); // random png
+
+                //newCard.setImageResource(R.drawable.ace_hearts_white_png);
+                cl.addView(newCard);
+            }
+
+        });
     }
 
     // https://stackoverflow.com/questions/18703841/call-method-on-activity-load-android
@@ -129,9 +184,10 @@ public class GameScreen extends AppCompatActivity {
 
         trackRunningCount(images, choice1, choice2);
 
+        TypedArray nonRecycledArray = images;
         images.recycle(); // https://stackoverflow.com/questions/21354501/typed-array-should-be-recycled-after-use-with-recycle
 
-        return images;
+        return nonRecycledArray;
     }
 
     public void trackRunningCount(TypedArray imagesProvided, int choice1Param, int choice2Param) {
@@ -180,6 +236,7 @@ public class GameScreen extends AppCompatActivity {
             }
         }
 
+        // https://stackoverflow.com/questions/4768969/how-do-i-change-textview-value-inside-java-code
         String runningCountStr = Integer.toString(runningCount);
 
         TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
@@ -187,15 +244,18 @@ public class GameScreen extends AppCompatActivity {
 
     }
 
-    public void addCard() {
+    public void addCard(View view) {
+        // https://stackoverflow.com/questions/15097950/adding-imageview-to-the-layout-programmatically
+
         ImageView newCard = new ImageView(GameScreen.this);
-        ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
+        // ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
 
         TypedArray newCardImages = getRandomCard();
         int newCardChoice = (int) (Math.random() * newCardImages.length());
 
         newCard.setImageResource(newCardImages.getResourceId(newCardChoice, R.drawable.back_red_basic)); // random png
-        cl.addView(newCard);
+
+        //cl.addView(newCard);
 
     }
 
