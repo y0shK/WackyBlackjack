@@ -8,7 +8,9 @@ import androidx.core.content.res.ResourcesCompat;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.net.Uri;
@@ -28,7 +30,8 @@ import java.util.Random;
 
 public class GameScreen extends AppCompatActivity {
 
-    int clickCount;
+    int clickCount = 1;
+    int newCounter = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,39 +54,69 @@ public class GameScreen extends AppCompatActivity {
             public void onClick(View view) {
 
                 // https://stackoverflow.com/questions/17417571/how-many-times-a-button-is-clicked-in-android
-                clickCount = clickCount + 1;
+                //clickCount = clickCount + 1;
 
                 ImageView newCard = new ImageView(GameScreen.this);
                 ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
 
-                int card3XCoor = 415;
-                int card3YCoor = 712;
-                int xShift = 0;
+                //int card3XCoor = 325;
+                //int card3YCoor = 712;
+
+                ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
+                ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
+
+                float distanceCards = card2.getX() - card1.getX();
+
+                float card2XCoor = card2.getX();
+                float card2YCoor = card2.getY();
+
+                float newXCoor = card2XCoor; // initially, then add space between cards below
+                float constYCoor = card2YCoor; // always the same
 
                 //FIXME keep adding space between cards until >= 21
 
                 // first card drawn - 3rd overall
-                if (clickCount == 1) {
 
-                }
-                else if (clickCount == 2) { // hit more than once
-                    xShift += 10; //FIXME
+                //if (clickCount == 0) {
+                  //  xShift = 0; // put in a specific xy location
+                //}
+                //else { // hit more than once
+                  //  xShift = clickCount * distanceCards; // increment the shift so each card is evenly spaced
                     // y coordinate stays the same
-                }
-                else if (clickCount == 3) {
-                    xShift += 20; //FIXME
-                }
-                else if (clickCount == 4) {
-                    xShift += 30;
-                }
-                else if (clickCount == 5) {
-                    xShift += 40;
-                }
-                card3XCoor += xShift;
+                //}
+
+                float xShift = clickCount * distanceCards;
+                newXCoor += xShift;
                 clickCount += 1;
 
-                newCard.setX(card3XCoor + xShift);
-                newCard.setY(card3YCoor);
+                Rect actualPosition = new Rect();
+                newCard.getGlobalVisibleRect(actualPosition);
+                final Rect screen = new Rect(0, 0,
+                        Resources.getSystem().getDisplayMetrics().widthPixels,
+                        Resources.getSystem().getDisplayMetrics().heightPixels);
+
+                //int newRowCounter = 1;
+                boolean secondRowStarted;
+
+                if (newXCoor >= Resources.getSystem().getDisplayMetrics().widthPixels) {
+                    //float newXShift = newRowCounter * distanceCards;
+                    newXCoor = card1.getX();
+                    constYCoor = card1.getY() + 100;
+                    secondRowStarted = true;
+                }
+                else {
+                    secondRowStarted = false;
+                }
+
+                //int newCounter = 1;
+                if (constYCoor > card2YCoor) { // is the y coordinate lower? i.e. is it 2nd row?
+                    newXCoor += newCounter * distanceCards;
+                }
+                newCounter += 1;
+
+                // https://stackoverflow.com/questions/6418726/android-setting-x-y-of-image-programmatically
+                newCard.setX(newXCoor);
+                newCard.setY(constYCoor);
 
                 TypedArray images = getResources().obtainTypedArray(R.array.apptour);
                 int choice = (int) (Math.random() * images.length());
