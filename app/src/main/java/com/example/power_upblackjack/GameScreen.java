@@ -30,8 +30,8 @@ import java.util.Random;
 
 public class GameScreen extends AppCompatActivity {
 
-    int clickCount = 1;
-    int newCounter = 1;
+    int clickCount = 1; // click count for the first row of cards
+    int newCounter = 0; // click count for the second row of cards
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,69 +54,50 @@ public class GameScreen extends AppCompatActivity {
             public void onClick(View view) {
 
                 // https://stackoverflow.com/questions/17417571/how-many-times-a-button-is-clicked-in-android
-                //clickCount = clickCount + 1;
 
+                // create the new card programmatically
                 ImageView newCard = new ImageView(GameScreen.this);
+
+                // find ID of constraintLayout to reference the xml file to add the card to
                 ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
 
-                //int card3XCoor = 325;
-                //int card3YCoor = 712;
+                // the goal is to programmatically add cards instead of experimentally locating them
+                // find the xy coordinates of each card, then place each card a fixed distance away from the previous card
+                // for the second row, re-locate the initial x coordinate below the first row, then repeat
 
+                // instantiate cards to reference them later
                 ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
                 ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
 
+                // x distance
                 float distanceCards = card2.getX() - card1.getX();
 
+                // xy coordinates of the 2nd card (dealt automatically)
                 float card2XCoor = card2.getX();
                 float card2YCoor = card2.getY();
 
                 float newXCoor = card2XCoor; // initially, then add space between cards below
-                float constYCoor = card2YCoor; // always the same
+                float constYCoor = card2YCoor; // the same until the second row is added
 
-                //FIXME keep adding space between cards until >= 21
-
-                // first card drawn - 3rd overall
-
-                //if (clickCount == 0) {
-                  //  xShift = 0; // put in a specific xy location
-                //}
-                //else { // hit more than once
-                  //  xShift = clickCount * distanceCards; // increment the shift so each card is evenly spaced
-                    // y coordinate stays the same
-                //}
-
-                float xShift = clickCount * distanceCards;
+                // create the x distance between cards
+                float xShift = clickCount * distanceCards; // card n X = card n-1 X + xShift
                 newXCoor += xShift;
                 clickCount += 1;
-
-                Rect actualPosition = new Rect();
-                newCard.getGlobalVisibleRect(actualPosition);
-                final Rect screen = new Rect(0, 0,
-                        Resources.getSystem().getDisplayMetrics().widthPixels,
-                        Resources.getSystem().getDisplayMetrics().heightPixels);
-
-                //int newRowCounter = 1;
-                boolean secondRowStarted;
-
-                if (newXCoor >= Resources.getSystem().getDisplayMetrics().widthPixels) {
-                    //float newXShift = newRowCounter * distanceCards;
-                    newXCoor = card1.getX();
-                    constYCoor = card1.getY() + 100;
-                    secondRowStarted = true;
-                }
-                else {
-                    secondRowStarted = false;
-                }
-
-                //int newCounter = 1;
-                if (constYCoor > card2YCoor) { // is the y coordinate lower? i.e. is it 2nd row?
-                    newXCoor += newCounter * distanceCards;
-                }
-                newCounter += 1;
 
                 // https://stackoverflow.com/questions/6418726/android-setting-x-y-of-image-programmatically
                 newCard.setX(newXCoor);
                 newCard.setY(constYCoor);
+
+                // check if card goes off the screen
+                // if it goes off the screen, wrap the x back to the initial spot and increment again
+                // https://stackoverflow.com/questions/14039454/how-can-you-tell-if-a-view-is-visible-on-screen-in-android
+                if (newXCoor >= Resources.getSystem().getDisplayMetrics().widthPixels) { // if the x coordinate is past the screen
+                    // reset the x coordinate
+                    // start incrementing the distance between cards - newCounter is initially 0, then the distance is added to the coordinate
+                    newCard.setX(card1.getX() + newCounter * distanceCards);
+                    newCard.setY(constYCoor + 100);
+                    newCounter++; // only for second row
+                }
 
                 TypedArray images = getResources().obtainTypedArray(R.array.apptour);
                 int choice = (int) (Math.random() * images.length());
