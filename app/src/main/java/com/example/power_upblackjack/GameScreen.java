@@ -99,13 +99,36 @@ public class GameScreen extends AppCompatActivity {
                     newCounter++; // only for second row
                 }
 
-                TypedArray images = getResources().obtainTypedArray(R.array.apptour);
-                int choice = (int) (Math.random() * images.length());
+                TypedArray newImages = getResources().obtainTypedArray(R.array.apptour);
+                int choice = (int) (Math.random() * newImages.length());
 
-                newCard.setImageResource(images.getResourceId(choice, R.drawable.back_red_basic)); // random png
+                newCard.setImageResource(newImages.getResourceId(choice, R.drawable.back_red_basic)); // random png
 
                 //newCard.setImageResource(R.drawable.ace_hearts_white_png);
                 cl.addView(newCard);
+
+                // take care of running count - add to it as more cards are drawn
+                int currentRunningCount = trackRunningCount(newImages, 0, 0, choice);
+
+                int oldChoice1 = (int) getRandomCard().get(1);
+                int oldChoice2 = (int) getRandomCard().get(2);
+
+                //System.out.println(oldChoice1);
+                //System.out.println(oldChoice2);
+
+                TypedArray oldImages = (TypedArray) getRandomCard().get(0);
+                int oldRunningCount = trackRunningCount(oldImages, oldChoice1, oldChoice2, 0);
+                System.out.println("OLD RC" + oldRunningCount);
+
+                int totalRunningCount = oldRunningCount;
+                totalRunningCount += currentRunningCount;
+
+                // https://stackoverflow.com/questions/4768969/how-do-i-change-textview-value-inside-java-code
+                String runningCountStr = Integer.toString(totalRunningCount);
+
+                TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
+                textViewToChange.setText(runningCountStr);
+
             }
 
         });
@@ -177,7 +200,7 @@ public class GameScreen extends AppCompatActivity {
     }
     */
 
-    public TypedArray getRandomCard() {
+    public ArrayList getRandomCard() {
         ImageView img1 = ((ImageView)findViewById(R.id.playerCard1));
         ImageView img2 = ((ImageView)findViewById(R.id.playerCard2));
 
@@ -196,20 +219,32 @@ public class GameScreen extends AppCompatActivity {
         img1.setTag(images.getResourceId(choice1, R.drawable.back_red_basic));
         img2.setTag(images.getResourceId(choice2, R.drawable.back_red_basic));
 
-        trackRunningCount(images, choice1, choice2);
+        trackRunningCount(images, choice1, choice2, 0);
 
         TypedArray nonRecycledArray = images;
-        images.recycle(); // https://stackoverflow.com/questions/21354501/typed-array-should-be-recycled-after-use-with-recycle
+        //images.recycle(); // https://stackoverflow.com/questions/21354501/typed-array-should-be-recycled-after-use-with-recycle
 
-        return nonRecycledArray;
+        // https://stackoverflow.com/questions/19602601/create-an-arraylist-with-multiple-object-types
+        ArrayList<Object> randomCardInfo = new ArrayList <>();
+        randomCardInfo.add(nonRecycledArray);
+        randomCardInfo.add(choice1);
+        randomCardInfo.add(choice2);
+
+        return randomCardInfo;
     }
 
-    public void trackRunningCount(TypedArray imagesProvided, int choice1Param, int choice2Param) {
+    public int trackRunningCount(TypedArray imagesProvided, int choice1Param, int choice2Param, int choiceNParam) {
         // figure out the cumulative value of each of the player's cards
 
         String cardValue1 = imagesProvided.getString(choice1Param);
         String cardValue2 = imagesProvided.getString(choice2Param);
+        String nthCardValue = imagesProvided.getString(choiceNParam);
         int runningCount = 0;
+
+        //System.out.println(cardValue1);
+        //System.out.println(cardValue2);
+        //System.out.println(nthCardValue);
+
 
         String[] valueNum = {"2", "3", "4", "5", "6", "7", "8", "9", "10"};
         String[] valueFace = {"jack", "queen", "king"}; // not ace - dealt with separately
@@ -221,6 +256,9 @@ public class GameScreen extends AppCompatActivity {
             if (cardValue2.contains(value)) {
                 runningCount += Integer.parseInt(value);
             }
+            if (nthCardValue.contains(value)) {
+                runningCount += Integer.parseInt(value);
+            }
         }
 
         for (String value : valueFace) {
@@ -228,6 +266,9 @@ public class GameScreen extends AppCompatActivity {
                 runningCount += 10; // jack, queen, and king are all 10
             }
             if (cardValue2.contains(value)) {
+                runningCount += 10;
+            }
+            if (nthCardValue.contains(value)) {
                 runningCount += 10;
             }
         }
@@ -249,12 +290,23 @@ public class GameScreen extends AppCompatActivity {
                 runningCount += 1;
             }
         }
+        if (nthCardValue.contains("ace")) {
+            if ((runningCount + 11) <= 21) {
+                runningCount += 11;
+            }
+            else { // > 21
+                runningCount += 1;
+            }
+        }
 
         // https://stackoverflow.com/questions/4768969/how-do-i-change-textview-value-inside-java-code
         String runningCountStr = Integer.toString(runningCount);
 
         TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
         textViewToChange.setText(runningCountStr);
+
+        System.out.println("RC " + runningCount);
+        return runningCount;
 
     }
 
@@ -264,7 +316,7 @@ public class GameScreen extends AppCompatActivity {
         ImageView newCard = new ImageView(GameScreen.this);
         // ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
 
-        TypedArray newCardImages = getRandomCard();
+        TypedArray newCardImages = (TypedArray) getRandomCard().get(0);
         int newCardChoice = (int) (Math.random() * newCardImages.length());
 
         newCard.setImageResource(newCardImages.getResourceId(newCardChoice, R.drawable.back_red_basic)); // random png
