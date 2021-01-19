@@ -108,25 +108,33 @@ public class GameScreen extends AppCompatActivity {
                 cl.addView(newCard);
 
                 // take care of running count - add to it as more cards are drawn
-                int currentRunningCount = trackRunningCount(newImages, 0, 0, choice);
+                //int currentRunningCount = trackRunningCount(newImages, 0, 0, choice);
 
-                int oldChoice1 = (int) getRandomCard().get(1);
-                int oldChoice2 = (int) getRandomCard().get(2);
+                //int oldChoice1 = (int) getRandomCard().get(1);
+                //int oldChoice2 = (int) getRandomCard().get(2);
 
                 //System.out.println(oldChoice1);
                 //System.out.println(oldChoice2);
 
-                TypedArray oldImages = (TypedArray) getRandomCard().get(0);
-                int oldRunningCount = trackRunningCount(oldImages, oldChoice1, oldChoice2, 0);
-                System.out.println("OLD RC" + oldRunningCount);
-
-                int totalRunningCount = oldRunningCount;
-                totalRunningCount += currentRunningCount;
+                //TypedArray oldImages = (TypedArray) getRandomCard().get(0);
+                //int oldRunningCount = trackRunningCount(oldImages, oldChoice1, oldChoice2);
+                //System.out.println("OLD RC" + oldRunningCount);
 
                 // https://stackoverflow.com/questions/4768969/how-do-i-change-textview-value-inside-java-code
-                String runningCountStr = Integer.toString(totalRunningCount);
+
+                //int runningCount = trackRunningCount(newImages, choice, -1);
 
                 TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
+
+                CharSequence previousRunningCountChars = textViewToChange.getText();
+                String previousRunningCountStr = previousRunningCountChars.toString();
+                int runningCount = Integer.parseInt(previousRunningCountStr);
+
+                //int runningCount = previousRunningCount;
+                runningCount += trackRunningCount(newImages, choice, -1);
+
+                String runningCountStr = Integer.toString(runningCount);
+
                 textViewToChange.setText(runningCountStr);
 
             }
@@ -219,13 +227,13 @@ public class GameScreen extends AppCompatActivity {
         img1.setTag(images.getResourceId(choice1, R.drawable.back_red_basic));
         img2.setTag(images.getResourceId(choice2, R.drawable.back_red_basic));
 
-        trackRunningCount(images, choice1, choice2, 0);
+        trackRunningCount(images, choice1, choice2);
 
         TypedArray nonRecycledArray = images;
         //images.recycle(); // https://stackoverflow.com/questions/21354501/typed-array-should-be-recycled-after-use-with-recycle
 
         // https://stackoverflow.com/questions/19602601/create-an-arraylist-with-multiple-object-types
-        ArrayList<Object> randomCardInfo = new ArrayList <>();
+        ArrayList<Object> randomCardInfo = new ArrayList <Object>();
         randomCardInfo.add(nonRecycledArray);
         randomCardInfo.add(choice1);
         randomCardInfo.add(choice2);
@@ -233,12 +241,26 @@ public class GameScreen extends AppCompatActivity {
         return randomCardInfo;
     }
 
-    public int trackRunningCount(TypedArray imagesProvided, int choice1Param, int choice2Param, int choiceNParam) {
+    public int trackRunningCount(TypedArray imagesProvided, int choice1Param, int choice2Param) {
         // figure out the cumulative value of each of the player's cards
 
-        String cardValue1 = imagesProvided.getString(choice1Param);
-        String cardValue2 = imagesProvided.getString(choice2Param);
-        String nthCardValue = imagesProvided.getString(choiceNParam);
+        String cardValue1;
+        String cardValue2;
+
+        if (choice1Param > 0) {
+            cardValue1 = imagesProvided.getString(choice1Param);
+        }
+        else {
+            cardValue1 = "-1";
+        }
+
+        if (choice2Param > 0) {
+            cardValue2 = imagesProvided.getString(choice2Param);
+        }
+        else {
+            cardValue2 = "-1";
+        }
+
         int runningCount = 0;
 
         //System.out.println(cardValue1);
@@ -256,57 +278,40 @@ public class GameScreen extends AppCompatActivity {
             if (cardValue2.contains(value)) {
                 runningCount += Integer.parseInt(value);
             }
-            if (nthCardValue.contains(value)) {
-                runningCount += Integer.parseInt(value);
-            }
         }
 
-        for (String value : valueFace) {
-            if (cardValue1.contains(value)) {
-                runningCount += 10; // jack, queen, and king are all 10
+            for (String value : valueFace) {
+                if (cardValue1.contains(value)) {
+                    runningCount += 10; // jack, queen, and king are all 10
+                }
+                if (cardValue2.contains(value)) {
+                    runningCount += 10;
+                }
             }
-            if (cardValue2.contains(value)) {
-                runningCount += 10;
-            }
-            if (nthCardValue.contains(value)) {
-                runningCount += 10;
-            }
-        }
 
-        // for ace, it counts as 11 unless it would bust ( > 21), in which case it counts as 1
-        if (cardValue1.contains("ace")) {
-            if ((runningCount + 11) <= 21) {
-                runningCount += 11;
+            // for ace, it counts as 11 unless it would bust ( > 21), in which case it counts as 1
+            if (cardValue1.contains("ace")) {
+                if ((runningCount + 11) <= 21) {
+                    runningCount += 11;
+                } else { // > 21
+                    runningCount += 1;
+                }
             }
-            else { // > 21
-                runningCount += 1;
+            if (cardValue2.contains("ace")) {
+                if ((runningCount + 11) <= 21) {
+                    runningCount += 11;
+                } else { // > 21
+                    runningCount += 1;
+                }
             }
-        }
-        if (cardValue2.contains("ace")) {
-            if ((runningCount + 11) <= 21) {
-                runningCount += 11;
-            }
-            else { // > 21
-                runningCount += 1;
-            }
-        }
-        if (nthCardValue.contains("ace")) {
-            if ((runningCount + 11) <= 21) {
-                runningCount += 11;
-            }
-            else { // > 21
-                runningCount += 1;
-            }
-        }
 
-        // https://stackoverflow.com/questions/4768969/how-do-i-change-textview-value-inside-java-code
-        String runningCountStr = Integer.toString(runningCount);
+            // https://stackoverflow.com/questions/4768969/how-do-i-change-textview-value-inside-java-code
+            String runningCountStr = Integer.toString(runningCount);
 
-        TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
-        textViewToChange.setText(runningCountStr);
+            TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
+            textViewToChange.setText(runningCountStr);
 
-        System.out.println("RC " + runningCount);
-        return runningCount;
+            return runningCount;
 
     }
 
