@@ -145,6 +145,7 @@ public class GameScreen extends AppCompatActivity {
 
     public int getTextViewIntegerContents(TextView tv) {
         // TextView contents are type CharSequence
+        // https://stackoverflow.com/questions/5858307/charsequence-to-int
         CharSequence cs = tv.getText();
 
         String str = cs.toString();
@@ -192,21 +193,37 @@ public class GameScreen extends AppCompatActivity {
         String cardValue1;
         String cardValue2;
 
-        if (choice1Param > 1) { // is the card valid (i.e. 2-10 or face? no joker)
+        if (choice1Param > -1) { // the 0th element all the way to the nth element can be called
             cardValue1 = imagesProvided.getString(choice1Param);
         }
         else {
             cardValue1 = "-1"; // dummy string that won't increment the count
         }
 
-        if (choice2Param > 1) {
+        if (choice2Param > -1) {
             cardValue2 = imagesProvided.getString(choice2Param);
         }
         else {
             cardValue2 = "-1";
         }
 
+        //System.out.println(cardValue1);
+        //System.out.println(cardValue2);
+
         int runningCount = 0;
+
+        // get the value of the textView and extract the integer contents
+        TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
+        int textViewIntVal = getTextViewIntegerContents(textViewToChange);
+
+        // TODO fix and set some sort of lose condition when bust occurs
+
+        TextView loseCondition = (TextView) findViewById(R.id.loseConditionTextView);
+
+        if (textViewIntVal > 21) {
+            System.out.println("lost");
+            //loseCondition.setText(R.string.lose_condition_bust);
+        }
 
         String[] valueNum = {"2", "3", "4", "5", "6", "7", "8", "9", "10"};
         String[] valueFace = {"jack", "queen", "king"}; // not ace - dealt with separately
@@ -232,23 +249,15 @@ public class GameScreen extends AppCompatActivity {
         // for ace, it counts as 11 unless it would bust ( > 21), in which case it counts as 1
         // to make sure that ace works properly, check the textView for the current contents and then append the ace value
 
-        TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
-        int textViewIntVal = getTextViewIntegerContents(textViewToChange);
-
-        // TODO fix ace value (either 1 or 11) based on TextView, not "cardValue"
-        if (textViewIntVal + 11 <= 21) {
-
-        }
-
         if (cardValue1.contains("ace")) {
-            if ((runningCount + 11) <= 21) {
-                runningCount += 11;
-            } else { // > 21
+            if ((textViewIntVal + 11) <= 21) { // if adding an ace would not result in a bust
+                runningCount += 11; // then add the maximum value to the running count
+            } else { // else, just add the minimum value and bust
                 runningCount += 1;
             }
         }
         if (cardValue2.contains("ace")) {
-            if ((runningCount + 11) <= 21) {
+            if ((textViewIntVal + 11) <= 21) {
                 runningCount += 11;
             } else { // > 21
                 runningCount += 1;
@@ -259,7 +268,7 @@ public class GameScreen extends AppCompatActivity {
         String runningCountStr = Integer.toString(runningCount);
 
         //TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
-        textViewToChange.setText(runningCountStr);
+        textViewToChange.setText(runningCountStr); // this setText is for the initial two cards' value
 
         return runningCount;
 

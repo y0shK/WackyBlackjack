@@ -6,4 +6,5 @@
     <string name="hit_card">Hit</string>
     <string name="stand_card">Stand</string>
     <string name="new_card_id">newID</string>
+    <string name="lose_condition_bust"></string>
 </resources>
