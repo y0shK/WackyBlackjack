@@ -130,8 +130,25 @@ public class GameScreen extends AppCompatActivity {
                 String runningCountStr = Integer.toString(runningCount);
                 textViewToChange.setText(runningCountStr);
 
+                // putting the check to see if the player is > 21 here ensures that any bust is caught immediately,
+                // not the next time a card is hit
+                if (getTextViewIntegerContents(textViewToChange) > 21) {
+                    System.out.println("lose");
+                }
+
             }
 
+        });
+
+        ImageView blueChip = (ImageView) findViewById(R.id.bluePokerChipNoBg);
+        blueChip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TextView textViewToStand = (TextView) findViewById(R.id.runningCountTextView); // access TextView
+                int finalStandValue = getTextViewIntegerContents(textViewToStand);
+
+                System.out.println("stand " + finalStandValue);
+            }
         });
     }
 
@@ -215,15 +232,6 @@ public class GameScreen extends AppCompatActivity {
         // get the value of the textView and extract the integer contents
         TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
         int textViewIntVal = getTextViewIntegerContents(textViewToChange);
-
-        // TODO fix and set some sort of lose condition when bust occurs
-
-        TextView loseCondition = (TextView) findViewById(R.id.loseConditionTextView);
-
-        if (textViewIntVal > 21) {
-            System.out.println("lost");
-            //loseCondition.setText(R.string.lose_condition_bust);
-        }
 
         String[] valueNum = {"2", "3", "4", "5", "6", "7", "8", "9", "10"};
         String[] valueFace = {"jack", "queen", "king"}; // not ace - dealt with separately
