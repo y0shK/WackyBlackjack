@@ -22,6 +22,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -125,7 +127,7 @@ public class GameScreen extends AppCompatActivity {
                 // each time "hit" command is activated, a new card is added, and the count increases
                 // trackRunningCount has 2 params for the initial 2 cards dealt out
                     // however, additional cards are dealt one at a time, so the -1 parameter is a dummy param
-                runningCount += trackRunningCount(newImages, choice, -1);
+                runningCount += trackRunningCount(newImages, choice, -1, textViewToChange);
 
                 String runningCountStr = Integer.toString(runningCount);
                 textViewToChange.setText(runningCountStr);
@@ -148,6 +150,59 @@ public class GameScreen extends AppCompatActivity {
                 int finalStandValue = getTextViewIntegerContents(textViewToStand);
 
                 System.out.println("stand " + finalStandValue);
+
+                // after the player stands, the dealer will hit until 17 or higher
+
+                // instantiate necessary ImageViews
+                ImageView newDealerCard = new ImageView(GameScreen.this);
+                ImageView cardStack = (ImageView) findViewById(R.id.cardStack);
+
+                // instantiate old imageViews to find x distance
+                ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
+                ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
+
+                // x distance
+                float distanceCards = card2.getX() - card1.getX();
+
+                ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
+
+                float dealerXCoor = cardStack.getX();
+                float dealerYCoor = cardStack.getY();
+
+                int dealerCount = 0;
+                int runningCount = 0;
+
+                TypedArray newImages = getResources().obtainTypedArray(R.array.apptour);
+                int choice = (int) (Math.random() * newImages.length());
+                TextView dealerTextView = (TextView) findViewById(R.id.dealerTextView);
+
+                newDealerCard.setImageResource(newImages.getResourceId(choice, R.drawable.back_red_basic)); // random png
+
+                runningCount += trackRunningCount(newImages, choice, -1, dealerTextView);
+                //System.out.println(runningCount);
+
+                newDealerCard.setX(dealerXCoor + distanceCards);
+                newDealerCard.setY(dealerYCoor);
+
+                cl.addView(newDealerCard);
+
+                /*
+                while (runningCount < 17) {
+                    TypedArray newImages = getResources().obtainTypedArray(R.array.apptour);
+                    int choice = (int) (Math.random() * newImages.length());
+
+                    newDealerCard.setImageResource(newImages.getResourceId(choice, R.drawable.back_red_basic)); // random png
+
+                    cl.addView(newDealerCard);
+
+                    dealerCount = trackRunningCount(newImages, choice, -1);
+                    runningCount += dealerCount;
+                }
+                 */
+
+
+
+
             }
         });
     }
@@ -184,6 +239,7 @@ public class GameScreen extends AppCompatActivity {
         TypedArray images = getResources().obtainTypedArray(R.array.apptour);
         int choice1 = (int) (Math.random() * images.length());
         int choice2 = (int) (Math.random() * images.length());
+        TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
 
         img1.setImageResource(images.getResourceId(choice1, R.drawable.back_red_basic)); // random png
         img2.setImageResource(images.getResourceId(choice2, R.drawable.back_red_basic)); // random png
@@ -191,7 +247,7 @@ public class GameScreen extends AppCompatActivity {
         //img1.setTag(images.getResourceId(choice1, R.drawable.back_red_basic));
         //img2.setTag(images.getResourceId(choice2, R.drawable.back_red_basic));
 
-        trackRunningCount(images, choice1, choice2);
+        trackRunningCount(images, choice1, choice2, textViewToChange);
 
         TypedArray nonRecycledArray = images;
         images.recycle(); // https://stackoverflow.com/questions/21354501/typed-array-should-be-recycled-after-use-with-recycle
@@ -202,7 +258,7 @@ public class GameScreen extends AppCompatActivity {
         return nonRecycledArray;
     }
 
-    public int trackRunningCount(TypedArray imagesProvided, int choice1Param, int choice2Param) {
+    public int trackRunningCount(TypedArray imagesProvided, int choice1Param, int choice2Param, TextView toChange) {
         // figure out the cumulative value of each of the player's cards
 
         // instantiate the variable that will hold the contents of each card
@@ -230,6 +286,8 @@ public class GameScreen extends AppCompatActivity {
         int runningCount = 0;
 
         // get the value of the textView and extract the integer contents
+        // use the TextViewToChange for the player's running count
+        // dealer textView is the dealer's running count
         TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
         int textViewIntVal = getTextViewIntegerContents(textViewToChange);
 
@@ -276,7 +334,7 @@ public class GameScreen extends AppCompatActivity {
         String runningCountStr = Integer.toString(runningCount);
 
         //TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
-        textViewToChange.setText(runningCountStr); // this setText is for the initial two cards' value
+        toChange.setText(runningCountStr); // this setText is for the initial two cards' value
 
         return runningCount;
 
