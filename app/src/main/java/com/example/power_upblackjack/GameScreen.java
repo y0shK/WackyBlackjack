@@ -154,7 +154,8 @@ public class GameScreen extends AppCompatActivity {
                 // after the player stands, the dealer will hit until 17 or higher
 
                 // instantiate necessary ImageViews
-                ImageView newDealerCard = new ImageView(GameScreen.this);
+                ImageView newDealerCard1 = new ImageView(GameScreen.this);
+                ImageView newDealerCard2 = new ImageView(GameScreen.this);
                 ImageView cardStack = (ImageView) findViewById(R.id.cardStack);
 
                 // instantiate old imageViews to find x distance
@@ -171,20 +172,47 @@ public class GameScreen extends AppCompatActivity {
 
                 int dealerCount = 0;
                 int runningCount = 0;
+                int dealerCardAddMultiplier = 1;
 
                 TypedArray newImages = getResources().obtainTypedArray(R.array.apptour);
-                int choice = (int) (Math.random() * newImages.length());
+                int choice1 = (int) (Math.random() * newImages.length());
+                int choice2 = (int) (Math.random() * newImages.length());
                 TextView dealerTextView = (TextView) findViewById(R.id.dealerTextView);
 
-                newDealerCard.setImageResource(newImages.getResourceId(choice, R.drawable.back_red_basic)); // random png
+                newDealerCard1.setImageResource(newImages.getResourceId(choice1, R.drawable.back_red_basic)); // random png
+                newDealerCard2.setImageResource(newImages.getResourceId(choice2, R.drawable.back_red_basic));
 
-                runningCount += trackRunningCount(newImages, choice, -1, dealerTextView);
+                runningCount += trackRunningCount(newImages, choice1, -1, dealerTextView);
+                runningCount += trackRunningCount(newImages, choice2, -1, dealerTextView);
                 //System.out.println(runningCount);
 
-                newDealerCard.setX(dealerXCoor + distanceCards);
-                newDealerCard.setY(dealerYCoor);
+                newDealerCard1.setX(dealerXCoor + dealerCardAddMultiplier * distanceCards);
+                newDealerCard1.setY(dealerYCoor);
 
-                cl.addView(newDealerCard);
+                dealerCardAddMultiplier++;
+
+                newDealerCard2.setX(dealerXCoor + dealerCardAddMultiplier * distanceCards);
+                newDealerCard2.setY(dealerYCoor);
+
+                cl.addView(newDealerCard1);
+                cl.addView(newDealerCard2);
+
+                //dealerCardAddMultiplier++;
+
+                /*
+                if (runningCount < 17) {
+                    int newChoice = (int) (Math.random() * newImages.length());
+
+                    newDealerCard.setImageResource(newImages.getResourceId(newChoice, R.drawable.back_red_basic)); // random png
+
+                    newDealerCard.setX(dealerXCoor + dealerCardAddMultiplier * distanceCards);
+                    newDealerCard.setY(dealerYCoor);
+
+                    cl.addView(newDealerCard);
+
+                    dealerCardAddMultiplier++;
+                }
+                */
 
                 /*
                 while (runningCount < 17) {
