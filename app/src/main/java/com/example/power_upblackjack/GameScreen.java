@@ -170,52 +170,14 @@ public class GameScreen extends AppCompatActivity {
                 float dealerXCoor = cardStack.getX();
                 float dealerYCoor = cardStack.getY();
 
-                int dealerCount = 0;
+                int dealerCount;
                 int runningCount = 0;
                 int dealerCardAddMultiplier = 1;
 
-                TypedArray newImages = getResources().obtainTypedArray(R.array.apptour);
-                int choice1 = (int) (Math.random() * newImages.length());
-                int choice2 = (int) (Math.random() * newImages.length());
                 TextView dealerTextView = (TextView) findViewById(R.id.dealerTextView);
 
-                newDealerCard1.setImageResource(newImages.getResourceId(choice1, R.drawable.back_red_basic)); // random png
-                newDealerCard2.setImageResource(newImages.getResourceId(choice2, R.drawable.back_red_basic));
-
-                runningCount += trackRunningCount(newImages, choice1, -1, dealerTextView);
-                runningCount += trackRunningCount(newImages, choice2, -1, dealerTextView);
-                //System.out.println(runningCount);
-
-                newDealerCard1.setX(dealerXCoor + dealerCardAddMultiplier * distanceCards);
-                newDealerCard1.setY(dealerYCoor);
-
-                dealerCardAddMultiplier++;
-
-                newDealerCard2.setX(dealerXCoor + dealerCardAddMultiplier * distanceCards);
-                newDealerCard2.setY(dealerYCoor);
-
-                cl.addView(newDealerCard1);
-                cl.addView(newDealerCard2);
-
-                //dealerCardAddMultiplier++;
-
-                /*
-                if (runningCount < 17) {
-                    int newChoice = (int) (Math.random() * newImages.length());
-
-                    newDealerCard.setImageResource(newImages.getResourceId(newChoice, R.drawable.back_red_basic)); // random png
-
-                    newDealerCard.setX(dealerXCoor + dealerCardAddMultiplier * distanceCards);
-                    newDealerCard.setY(dealerYCoor);
-
-                    cl.addView(newDealerCard);
-
-                    dealerCardAddMultiplier++;
-                }
-                */
-
-                /*
                 while (runningCount < 17) {
+                    ImageView newDealerCard = new ImageView(GameScreen.this);
                     TypedArray newImages = getResources().obtainTypedArray(R.array.apptour);
                     int choice = (int) (Math.random() * newImages.length());
 
@@ -223,10 +185,17 @@ public class GameScreen extends AppCompatActivity {
 
                     cl.addView(newDealerCard);
 
-                    dealerCount = trackRunningCount(newImages, choice, -1);
+                    newDealerCard.setX(dealerXCoor + dealerCardAddMultiplier * distanceCards);
+                    newDealerCard.setY(dealerYCoor);
+
+                    dealerCount = trackRunningCount(newImages, choice, -1, dealerTextView);
                     runningCount += dealerCount;
+
+                    String dealerCountStr = Integer.toString(runningCount);
+                    dealerTextView.setText(dealerCountStr);
+
+                    dealerCardAddMultiplier++;
                 }
-                 */
 
 
 
