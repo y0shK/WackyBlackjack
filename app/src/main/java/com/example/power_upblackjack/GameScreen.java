@@ -197,8 +197,49 @@ public class GameScreen extends AppCompatActivity {
                     dealerCardAddMultiplier++;
                 }
 
+                // check win condition
 
+                TextView playerCountView = (TextView) findViewById(R.id.runningCountTextView);
+                TextView dealerCountView = (TextView) findViewById(R.id.dealerTextView);
 
+                int finalPlayerCount = getTextViewIntegerContents(playerCountView);
+                int finalDealerCount = getTextViewIntegerContents(dealerCountView);
+
+                System.out.println(finalPlayerCount);
+                System.out.println(finalDealerCount);
+
+                // check if either the player or the dealer busted
+                // if both busted, the game is a tie
+                // if one busted, the other wins
+                // else, check which is higher and report accordingly
+
+                TextView gameCondition = new TextView(GameScreen.this);
+                ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
+
+                if (finalPlayerCount > 21 && finalDealerCount > 21) {
+                    gameCondition.setText(R.string.tie_string);
+                }
+                else if (finalPlayerCount <= 21 && finalDealerCount > 21) {
+                    gameCondition.setText(R.string.win_string);
+                }
+                else if (finalPlayerCount > 21 && finalDealerCount <= 21) {
+                    gameCondition.setText(R.string.lose_string);
+                }
+                else { // nobody busted
+                    if (finalPlayerCount > finalDealerCount) {
+                        gameCondition.setText(R.string.win_string);
+                    }
+                    else if (finalPlayerCount < finalDealerCount) {
+                        gameCondition.setText(R.string.lose_string);
+                    }
+                    else {
+                        gameCondition.setText(R.string.tie_string);
+                    }
+                }
+
+                gameCondition.setX(purpleChip.getX());
+                gameCondition.setY(purpleChip.getY());
+                cl.addView(gameCondition);
 
             }
         });
@@ -210,6 +251,9 @@ public class GameScreen extends AppCompatActivity {
     {
         super.onStart();
         getRandomCard();
+        ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
+        ImageView redChip = (ImageView) findViewById(R.id.redPokerChipNoBg);
+        purpleChip.setY(redChip.getY());
     }
 
     public int getTextViewIntegerContents(TextView tv) {
