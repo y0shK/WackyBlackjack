@@ -134,9 +134,32 @@ public class GameScreen extends AppCompatActivity {
 
                 // putting the check to see if the player is > 21 here ensures that any bust is caught immediately,
                 // not the next time a card is hit
+
+                // set the appropriate variables so that if a bust occurs,
+                // an automatic game over will also occur
+
+                ImageView blueChip = (ImageView) findViewById(R.id.bluePokerChipNoBg);
+                ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
+                TextView gameCondition = new TextView(GameScreen.this);
+
                 if (getTextViewIntegerContents(textViewToChange) > 21) {
-                    System.out.println("lose");
+                    // if bust occurs,
+                    // game over and the player loses
+                    // experimentally defined
+                    gameCondition.setX((float) (purpleChip.getX() * 1.35));
+                    gameCondition.setY((float) (purpleChip.getY() * 1.17));
+                    gameCondition.setTextColor(getResources().getColor(R.color.black));
+                    gameCondition.setText(R.string.lose_string);
+                    cl.addView(gameCondition);
+
+                    // once stand is chosen,
+                    // the game is over one way or another
+                    // https://stackoverflow.com/questions/9144215/how-to-make-a-button-press-once-and-then-not-pressable-anymore
+                    blueChip.setEnabled(false);
+                    redChip.setEnabled(false);
                 }
+
+                //gameCondition.add
 
             }
 
@@ -216,14 +239,12 @@ public class GameScreen extends AppCompatActivity {
                 TextView gameCondition = new TextView(GameScreen.this);
                 ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
 
-                if (finalPlayerCount > 21 && finalDealerCount > 21) {
-                    gameCondition.setText(R.string.tie_string);
+                if (finalPlayerCount > 21) {
+                    // if the player busts, regardless of the dealer's hand, the player loses
+                    gameCondition.setText(R.string.lose_string);
                 }
                 else if (finalPlayerCount <= 21 && finalDealerCount > 21) {
                     gameCondition.setText(R.string.win_string);
-                }
-                else if (finalPlayerCount > 21 && finalDealerCount <= 21) {
-                    gameCondition.setText(R.string.lose_string);
                 }
                 else { // nobody busted
                     if (finalPlayerCount > finalDealerCount) {
@@ -237,9 +258,17 @@ public class GameScreen extends AppCompatActivity {
                     }
                 }
 
-                gameCondition.setX(purpleChip.getX());
-                gameCondition.setY(purpleChip.getY());
+                // experimentally defined
+                gameCondition.setX((float) (purpleChip.getX() * 1.35));
+                gameCondition.setY((float) (purpleChip.getY() * 1.17));
+                gameCondition.setTextColor(getResources().getColor(R.color.black));
                 cl.addView(gameCondition);
+
+                // once stand is chosen,
+                // the game is over one way or another
+                // https://stackoverflow.com/questions/9144215/how-to-make-a-button-press-once-and-then-not-pressable-anymore
+                blueChip.setEnabled(false);
+                redChip.setEnabled(false);
 
             }
         });
