@@ -278,6 +278,20 @@ public class GameScreen extends AppCompatActivity {
     @Override
     protected void onStart()
     {
+        ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
+
+        // set poker green hex code in colors.xml
+        // #35654d
+        cl.setBackgroundColor(getResources().getColor(R.color.poker_green));
+
+        // https://stackoverflow.com/questions/36236181/how-to-remove-title-bar-from-the-android-activity
+        try {
+            this.getSupportActionBar().hide();
+        }
+        catch (NullPointerException e) {
+
+        }
+
         super.onStart();
         getRandomCard();
         ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
