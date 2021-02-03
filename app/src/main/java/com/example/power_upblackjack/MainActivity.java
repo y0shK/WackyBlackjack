@@ -3,9 +3,14 @@ package com.example.power_upblackjack;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.app.ActionBar;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
+import android.view.Window;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,10 +28,29 @@ public class MainActivity extends AppCompatActivity {
 
         // set light green hex code in colors.xml
         cl.setBackgroundColor(getResources().getColor(R.color.poker_green));
+
+        // hide action bar to provide more prominence for "Wacky Blackjack" title
+        getSupportActionBar().hide();
+
+        //textColor();
+        //setStatusBarColor();
+        //getActionBar()/* or getSupportActionBar() */.setTitle(Html.fromHtml("<font color=\"black\">" + getString(R.string.app_name) + "</font>"));
     }
 
     public void startGame(View view) {
         Intent playGameIntent = new Intent(this, GameScreen.class);
         startActivity(playGameIntent);
     }
+
+    public void goToOptions(View view) {
+        Intent optionsIntent = new Intent(this, Options.class);
+        startActivity(optionsIntent);
+    }
+
+    // https://stackoverflow.com/questions/22192291/how-to-change-the-status-bar-color-in-android?rq=1
+    public void setStatusBarColor() {
+        Window window = this.getWindow();
+        window.setStatusBarColor(getResources().getColor(R.color.black));
+    }
+
 }
