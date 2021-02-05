@@ -10,6 +10,9 @@
     <string name="win_string">WIN</string>
     <string name="lose_string">LOSE</string>
     <string name="tie_string">TIE</string>
+    <string name="htp">How to Play</string>
+    <string name="app_info">App Info</string>
+
     <string name="about_string">About</string>
     <string name="about_content">
         This game is a blackjack variant which uses FIXME

@@ -47,6 +47,17 @@ public class MainActivity extends AppCompatActivity {
         startActivity(optionsIntent);
     }
 
+    public void howToPlay(View view) {
+        Intent htpIntent = new Intent(this, HowToPlay.class);
+        startActivity(htpIntent);
+    }
+
+    public void appInfo(View view) {
+        Intent appInfoIntent = new Intent(this, AppInfo.class);
+        startActivity(appInfoIntent);
+    }
+
+
     // https://stackoverflow.com/questions/22192291/how-to-change-the-status-bar-color-in-android?rq=1
     public void setStatusBarColor() {
         Window window = this.getWindow();
