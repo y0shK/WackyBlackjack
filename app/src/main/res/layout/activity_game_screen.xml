@@ -117,7 +117,7 @@
         android:id="@+id/purpleChipNoBg"
         android:layout_width="115dp"
         android:layout_height="99dp"
-        android:layout_marginBottom="176dp"
+        android:layout_marginBottom="204dp"
         app:layout_constraintBottom_toTopOf="@+id/runningCountTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -15,4 +15,17 @@ public class AppInfo extends AppCompatActivity {
 
         Intent appInfoIntent = getIntent();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        // hide action bar to provide more prominence for "Wacky Blackjack" title
+        getSupportActionBar().hide();
+
+        ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.appInfoID);
+
+        // set light green hex code in colors.xml
+        cl.setBackgroundColor(getResources().getColor(R.color.poker_green));
+    }
 }
