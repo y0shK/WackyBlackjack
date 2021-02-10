@@ -35,6 +35,9 @@ public class GameScreen extends AppCompatActivity {
     int clickCount = 1; // click count for the first row of cards
     int newCounter = 0; // click count for the second row of cards
 
+    int purpleClickCount = 0; // if > 1, keep dealer cards
+    boolean powerupUsed = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,72 +172,75 @@ public class GameScreen extends AppCompatActivity {
         blueChip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TextView textViewToStand = (TextView) findViewById(R.id.runningCountTextView); // access TextView
-                int finalStandValue = getTextViewIntegerContents(textViewToStand);
 
-                System.out.println("stand " + finalStandValue);
+                if (! powerupUsed) {
+                    TextView textViewToStand = (TextView) findViewById(R.id.runningCountTextView); // access TextView
+                    int finalStandValue = getTextViewIntegerContents(textViewToStand);
 
-                // after the player stands, the dealer will hit until 17 or higher
+                    //System.out.println("stand " + finalStandValue);
 
-                // instantiate necessary ImageViews
-                ImageView newDealerCard1 = new ImageView(GameScreen.this);
-                ImageView newDealerCard2 = new ImageView(GameScreen.this);
-                ImageView cardStack = (ImageView) findViewById(R.id.cardStack);
+                    // after the player stands, the dealer will hit until 17 or higher
 
-                // instantiate old imageViews to find x distance
-                ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
-                ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
+                    // instantiate necessary ImageViews
+                    ImageView newDealerCard1 = new ImageView(GameScreen.this);
+                    ImageView newDealerCard2 = new ImageView(GameScreen.this);
+                    ImageView cardStack = (ImageView) findViewById(R.id.cardStack);
 
-                // x distance
-                float distanceCards = card2.getX() - card1.getX();
+                    // instantiate old imageViews to find x distance
+                    ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
+                    ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
 
-                ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
+                    // x distance
+                    float distanceCards = card2.getX() - card1.getX();
 
-                float dealerXCoor = cardStack.getX();
-                float dealerYCoor = cardStack.getY();
+                    ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
 
-                int dealerCount;
-                int runningCount = 0;
-                int dealerCardAddMultiplier = 1;
+                    float dealerXCoor = cardStack.getX();
+                    float dealerYCoor = cardStack.getY();
 
-                TextView dealerTextView = (TextView) findViewById(R.id.dealerTextView);
+                    int dealerCount;
+                    int runningCount = 0;
+                    int dealerCardAddMultiplier = 1;
 
-                while (runningCount < 17) {
-                    ImageView newDealerCard = new ImageView(GameScreen.this);
-                    TypedArray newImages = getResources().obtainTypedArray(R.array.apptour);
-                    int choice = (int) (Math.random() * newImages.length());
+                    TextView dealerTextView = (TextView) findViewById(R.id.dealerTextView);
 
-                    newDealerCard.setImageResource(newImages.getResourceId(choice, R.drawable.back_red_basic)); // random png
+                    while (runningCount < 17) {
+                        ImageView newDealerCard = new ImageView(GameScreen.this);
+                        TypedArray newImages = getResources().obtainTypedArray(R.array.apptour);
+                        int choice = (int) (Math.random() * newImages.length());
 
-                    cl.addView(newDealerCard);
+                        newDealerCard.setImageResource(newImages.getResourceId(choice, R.drawable.back_red_basic)); // random png
 
-                    newDealerCard.setX(dealerXCoor + dealerCardAddMultiplier * distanceCards);
-                    newDealerCard.setY(dealerYCoor);
+                        cl.addView(newDealerCard);
 
-                    dealerCount = trackRunningCount(newImages, choice, -1, dealerTextView);
-                    runningCount += dealerCount;
+                        newDealerCard.setX(dealerXCoor + dealerCardAddMultiplier * distanceCards);
+                        newDealerCard.setY(dealerYCoor);
 
-                    String dealerCountStr = Integer.toString(runningCount);
-                    dealerTextView.setText(dealerCountStr);
+                        dealerCount = trackRunningCount(newImages, choice, -1, dealerTextView);
+                        runningCount += dealerCount;
 
-                    dealerCardAddMultiplier++;
-                }
+                        String dealerCountStr = Integer.toString(runningCount);
+                        dealerTextView.setText(dealerCountStr);
 
-                // check win condition
+                        dealerCardAddMultiplier++;
+                    }
 
-                TextView playerCountView = (TextView) findViewById(R.id.runningCountTextView);
-                TextView dealerCountView = (TextView) findViewById(R.id.dealerTextView);
+                    // check win condition
 
-                int finalPlayerCount = getTextViewIntegerContents(playerCountView);
-                int finalDealerCount = getTextViewIntegerContents(dealerCountView);
+                    TextView playerCountView = (TextView) findViewById(R.id.runningCountTextView);
+                    TextView dealerCountView = (TextView) findViewById(R.id.dealerTextView);
 
-                System.out.println(finalPlayerCount);
-                System.out.println(finalDealerCount);
+                    int finalPlayerCount = getTextViewIntegerContents(playerCountView);
+                    int finalDealerCount = getTextViewIntegerContents(dealerCountView);
 
-                // check if either the player or the dealer busted
-                // if both busted, the game is a tie
-                // if one busted, the other wins
-                // else, check which is higher and report accordingly
+                    System.out.println(finalPlayerCount);
+                    System.out.println(finalDealerCount);
+
+                    // check if either the player or the dealer busted
+                    // if both busted, the game is a tie
+                    // if one busted, the other wins
+                    // else, check which is higher and report accordingly
+
 
                 TextView gameCondition = new TextView(GameScreen.this);
                 ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
@@ -264,11 +270,18 @@ public class GameScreen extends AppCompatActivity {
                 gameCondition.setTextColor(getResources().getColor(R.color.black));
                 cl.addView(gameCondition);
 
-                // once stand is chosen,
-                // the game is over one way or another
-                // https://stackoverflow.com/questions/9144215/how-to-make-a-button-press-once-and-then-not-pressable-anymore
-                blueChip.setEnabled(false);
-                redChip.setEnabled(false);
+
+                    // once stand is chosen,
+                    // the game is over one way or another
+                    // https://stackoverflow.com/questions/9144215/how-to-make-a-button-press-once-and-then-not-pressable-anymore
+                    blueChip.setEnabled(false);
+                    redChip.setEnabled(false);
+                }
+                else { // powerup is used
+                    System.out.println("hi, you used the powerup");
+                    // FIXME implement logic
+                }
+
 
             }
         });
@@ -320,6 +333,42 @@ public class GameScreen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // start with clairyovance
+                // if clairvoyance is the powerup type,
+                    // when the clairyovance button is clicked, reveal the dealer's hand
+
+                TextView playerCountView = (TextView) findViewById(R.id.runningCountTextView);
+                TextView dealerCountView = (TextView) findViewById(R.id.dealerTextView);
+
+                // once the clairvoyance button is clicked, go through the dealer's actions
+                // and leave the player the option to either hit or stand as desired
+                // when the player stands, the game ends as usual
+
+                // https://stackoverflow.com/questions/16732398/android-call-onclick-method-without-clicking
+                blueChip.callOnClick();
+                powerupUsed = true;
+                purpleChip.setEnabled(false); // can't call clairvoyance again
+
+
+                // if the clairvoyance button is clicked, then keep the dealer's total
+                // don't re-shuffle them
+
+                redChip.setEnabled(true);
+                blueChip.setEnabled(true);
+
+                int playerCountClairvoyance = 0;
+                int dealerCountClairvoyance = 0;
+
+                if (purpleClickCount == 1) {
+                    dealerCountClairvoyance = getTextViewIntegerContents(dealerCountView);
+                    playerCountClairvoyance = getTextViewIntegerContents(playerCountView);
+                    purpleChip.setEnabled(false); // can't call clairvoyance again
+                }
+
+                //redChip.setEnabled(true);
+                //blueChip.setEnabled(true);
+
+
+
             }
         });
     }
