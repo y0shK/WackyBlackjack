@@ -272,6 +272,56 @@ public class GameScreen extends AppCompatActivity {
 
             }
         });
+
+        // start implementing powerups
+        // every time, the player gets a new powerup
+        // clairvoyance: reveal the dealer's hand - 0
+        // sabotage: add a random amount (1-4) to try to make them bust - 1
+        // incineration: get rid of one of your cards if you bust - 2
+        // transmutation: click one of your cards and replace it with a random card - 3
+        // joker: randomly replace your entire hand - 4
+
+
+        // generate random number for power-up
+        Random rand = new Random();
+        int powerupType = rand.nextInt(5); // 0-4, bound is exclusive
+        boolean clairvoyance = false;
+        boolean sabotage = false;
+        boolean incineration = false;
+        boolean transmutation = false;
+        boolean jokerPowerup = false;
+
+        ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
+        ImageView purpleChip = findViewById(R.id.purpleChipNoBg);
+        ImageView powerupImage = (ImageView) findViewById(R.id.replacePowerup);
+
+        if (powerupType == 0) {
+            clairvoyance = true;
+            powerupImage.setImageResource(R.drawable.clairvoyance);
+        }
+        else if (powerupType == 1) {
+            sabotage = true;
+            powerupImage.setImageResource(R.drawable.sabotage);
+        }
+        else if (powerupType == 2) {
+            incineration = true;
+            powerupImage.setImageResource(R.drawable.flames);
+        }
+        else if (powerupType == 3) {
+            transmutation = true;
+            powerupImage.setImageResource(R.drawable.transmutation);
+        }
+        else if (powerupType == 4) {
+            jokerPowerup = true;
+            powerupImage.setImageResource(R.drawable.joker_skull);
+        }
+
+        purpleChip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // start with clairyovance
+            }
+        });
     }
 
     // https://stackoverflow.com/questions/18703841/call-method-on-activity-load-android
