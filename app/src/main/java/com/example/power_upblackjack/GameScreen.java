@@ -37,6 +37,58 @@ public class GameScreen extends AppCompatActivity {
 
     int purpleClickCount = 0; // if > 1, keep dealer cards
     boolean powerupUsed = false;
+    boolean clairvoyanceUsed = false;
+    boolean clairvoyanceDone = false;
+
+
+    public void generateDealerCards() {
+        TextView textViewToStand = (TextView) findViewById(R.id.runningCountTextView); // access TextView
+        int finalStandValue = getTextViewIntegerContents(textViewToStand);
+
+        // instantiate necessary ImageViews
+        ImageView newDealerCard1 = new ImageView(GameScreen.this);
+        ImageView newDealerCard2 = new ImageView(GameScreen.this);
+        ImageView cardStack = (ImageView) findViewById(R.id.cardStack);
+
+        // instantiate old imageViews to find x distance
+        ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
+        ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
+
+        // x distance
+        float distanceCards = card2.getX() - card1.getX();
+
+        ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
+
+        float dealerXCoor = cardStack.getX();
+        float dealerYCoor = cardStack.getY();
+
+        int dealerCount;
+        int runningCount = 0;
+        int dealerCardAddMultiplier = 1;
+
+        TextView dealerTextView = (TextView) findViewById(R.id.dealerTextView);
+
+        while (runningCount < 17) {
+            ImageView newDealerCard = new ImageView(GameScreen.this);
+            TypedArray newImages = getResources().obtainTypedArray(R.array.apptour);
+            int choice = (int) (Math.random() * newImages.length());
+
+            newDealerCard.setImageResource(newImages.getResourceId(choice, R.drawable.back_red_basic)); // random png
+
+            cl.addView(newDealerCard);
+
+            newDealerCard.setX(dealerXCoor + dealerCardAddMultiplier * distanceCards);
+            newDealerCard.setY(dealerYCoor);
+
+            dealerCount = trackRunningCount(newImages, choice, -1, dealerTextView);
+            runningCount += dealerCount;
+
+            String dealerCountStr = Integer.toString(runningCount);
+            dealerTextView.setText(dealerCountStr);
+
+            dealerCardAddMultiplier++;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +181,7 @@ public class GameScreen extends AppCompatActivity {
 
                 // each time "hit" command is activated, a new card is added, and the count increases
                 // trackRunningCount has 2 params for the initial 2 cards dealt out
-                    // however, additional cards are dealt one at a time, so the -1 parameter is a dummy param
+                // however, additional cards are dealt one at a time, so the -1 parameter is a dummy param
                 runningCount += trackRunningCount(newImages, choice, -1, textViewToChange);
 
                 String runningCountStr = Integer.toString(runningCount);
@@ -173,57 +225,19 @@ public class GameScreen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (! powerupUsed) {
-                    TextView textViewToStand = (TextView) findViewById(R.id.runningCountTextView); // access TextView
-                    int finalStandValue = getTextViewIntegerContents(textViewToStand);
+                boolean shouldShowDealerCards;
 
-                    //System.out.println("stand " + finalStandValue);
+                if (! clairvoyanceUsed && ! clairvoyanceDone) { // the clairvoyance powerup is not used
+                    shouldShowDealerCards = true;
+                }
+                else { // the clairvoyance powerup is used and the game needs to end
+                    shouldShowDealerCards = false;
+                }
 
-                    // after the player stands, the dealer will hit until 17 or higher
+                // generate dealer cards only if clairvoyance has not been used
+                if (shouldShowDealerCards) {
 
-                    // instantiate necessary ImageViews
-                    ImageView newDealerCard1 = new ImageView(GameScreen.this);
-                    ImageView newDealerCard2 = new ImageView(GameScreen.this);
-                    ImageView cardStack = (ImageView) findViewById(R.id.cardStack);
-
-                    // instantiate old imageViews to find x distance
-                    ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
-                    ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
-
-                    // x distance
-                    float distanceCards = card2.getX() - card1.getX();
-
-                    ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
-
-                    float dealerXCoor = cardStack.getX();
-                    float dealerYCoor = cardStack.getY();
-
-                    int dealerCount;
-                    int runningCount = 0;
-                    int dealerCardAddMultiplier = 1;
-
-                    TextView dealerTextView = (TextView) findViewById(R.id.dealerTextView);
-
-                    while (runningCount < 17) {
-                        ImageView newDealerCard = new ImageView(GameScreen.this);
-                        TypedArray newImages = getResources().obtainTypedArray(R.array.apptour);
-                        int choice = (int) (Math.random() * newImages.length());
-
-                        newDealerCard.setImageResource(newImages.getResourceId(choice, R.drawable.back_red_basic)); // random png
-
-                        cl.addView(newDealerCard);
-
-                        newDealerCard.setX(dealerXCoor + dealerCardAddMultiplier * distanceCards);
-                        newDealerCard.setY(dealerYCoor);
-
-                        dealerCount = trackRunningCount(newImages, choice, -1, dealerTextView);
-                        runningCount += dealerCount;
-
-                        String dealerCountStr = Integer.toString(runningCount);
-                        dealerTextView.setText(dealerCountStr);
-
-                        dealerCardAddMultiplier++;
-                    }
+                    generateDealerCards();
 
                     // check win condition
 
@@ -242,33 +256,35 @@ public class GameScreen extends AppCompatActivity {
                     // else, check which is higher and report accordingly
 
 
-                TextView gameCondition = new TextView(GameScreen.this);
-                ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
+                    TextView gameCondition = new TextView(GameScreen.this);
+                    ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
 
-                if (finalPlayerCount > 21) {
-                    // if the player busts, regardless of the dealer's hand, the player loses
-                    gameCondition.setText(R.string.lose_string);
-                }
-                else if (finalPlayerCount <= 21 && finalDealerCount > 21) {
-                    gameCondition.setText(R.string.win_string);
-                }
-                else { // nobody busted
-                    if (finalPlayerCount > finalDealerCount) {
-                        gameCondition.setText(R.string.win_string);
-                    }
-                    else if (finalPlayerCount < finalDealerCount) {
+                    if (finalPlayerCount > 21) {
+                        // if the player busts, regardless of the dealer's hand, the player loses
                         gameCondition.setText(R.string.lose_string);
                     }
-                    else {
-                        gameCondition.setText(R.string.tie_string);
+                    else if (finalPlayerCount <= 21 && finalDealerCount > 21) {
+                        gameCondition.setText(R.string.win_string);
                     }
-                }
+                    else { // nobody busted
+                        if (finalPlayerCount > finalDealerCount) {
+                            gameCondition.setText(R.string.win_string);
+                        }
+                        else if (finalPlayerCount < finalDealerCount) {
+                            gameCondition.setText(R.string.lose_string);
+                        }
+                        else {
+                            gameCondition.setText(R.string.tie_string);
+                        }
+                    }
 
-                // experimentally defined
-                gameCondition.setX((float) (purpleChip.getX() * 1.35));
-                gameCondition.setY((float) (purpleChip.getY() * 1.17));
-                gameCondition.setTextColor(getResources().getColor(R.color.black));
-                cl.addView(gameCondition);
+                    // experimentally defined
+                    gameCondition.setX((float) (purpleChip.getX() * 1.35));
+                    gameCondition.setY((float) (purpleChip.getY() * 1.17));
+                    gameCondition.setTextColor(getResources().getColor(R.color.black));
+
+                    ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
+                    cl.addView(gameCondition);
 
 
                     // once stand is chosen,
@@ -277,9 +293,50 @@ public class GameScreen extends AppCompatActivity {
                     blueChip.setEnabled(false);
                     redChip.setEnabled(false);
                 }
-                else { // powerup is used
-                    System.out.println("hi, you used the powerup");
-                    // FIXME implement logic
+                else { // powerup of clairvoyance is used
+                    TextView playerCountView = (TextView) findViewById(R.id.runningCountTextView);
+                    TextView dealerCountView = (TextView) findViewById(R.id.dealerTextView);
+
+                    int finalPlayerCount = getTextViewIntegerContents(playerCountView);
+                    int finalDealerCount = getTextViewIntegerContents(dealerCountView);
+
+                    TextView gameCondition = new TextView(GameScreen.this);
+                    ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
+
+                    if (finalPlayerCount > 21) {
+                        // if the player busts, regardless of the dealer's hand, the player loses
+                        gameCondition.setText(R.string.lose_string);
+                    }
+                    else if (finalPlayerCount <= 21 && finalDealerCount > 21) {
+                        gameCondition.setText(R.string.win_string);
+                    }
+                    else { // nobody busted
+                        if (finalPlayerCount > finalDealerCount) {
+                            gameCondition.setText(R.string.win_string);
+                        }
+                        else if (finalPlayerCount < finalDealerCount) {
+                            gameCondition.setText(R.string.lose_string);
+                        }
+                        else {
+                            gameCondition.setText(R.string.tie_string);
+                        }
+                    }
+
+                    // experimentally defined
+                    gameCondition.setX((float) (purpleChip.getX() * 1.35));
+                    gameCondition.setY((float) (purpleChip.getY() * 1.17));
+                    gameCondition.setTextColor(getResources().getColor(R.color.black));
+
+                    ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
+                    cl.addView(gameCondition);
+
+                    blueChip.setEnabled(true);
+                    redChip.setEnabled(true);
+
+
+
+
+
                 }
 
 
@@ -334,7 +391,7 @@ public class GameScreen extends AppCompatActivity {
             public void onClick(View view) {
                 // start with clairyovance
                 // if clairvoyance is the powerup type,
-                    // when the clairyovance button is clicked, reveal the dealer's hand
+                // when the clairyovance button is clicked, reveal the dealer's hand
 
                 TextView playerCountView = (TextView) findViewById(R.id.runningCountTextView);
                 TextView dealerCountView = (TextView) findViewById(R.id.dealerTextView);
@@ -344,25 +401,27 @@ public class GameScreen extends AppCompatActivity {
                 // when the player stands, the game ends as usual
 
                 // https://stackoverflow.com/questions/16732398/android-call-onclick-method-without-clicking
-                blueChip.callOnClick();
+                //blueChip.callOnClick();
+
+                // two booleans - one for using clairvoyance and one for generating the dealer cards
+                // the first boolean, clairvoyanceUsed, is initially false and becomes true onClick
+                // the second boolean, clairvoyanceDone, is initially false, and becomes true onClick
+                    // to permit the Stand button to end the game
                 powerupUsed = true;
+                clairvoyanceUsed = true;
+
+                generateDealerCards();
+
+                clairvoyanceDone = true;
+
                 purpleChip.setEnabled(false); // can't call clairvoyance again
 
 
                 // if the clairvoyance button is clicked, then keep the dealer's total
                 // don't re-shuffle them
 
-                redChip.setEnabled(true);
-                blueChip.setEnabled(true);
-
-                int playerCountClairvoyance = 0;
-                int dealerCountClairvoyance = 0;
-
-                if (purpleClickCount == 1) {
-                    dealerCountClairvoyance = getTextViewIntegerContents(dealerCountView);
-                    playerCountClairvoyance = getTextViewIntegerContents(playerCountView);
-                    purpleChip.setEnabled(false); // can't call clairvoyance again
-                }
+                //redChip.setEnabled(true);
+                //blueChip.setEnabled(true);
 
                 //redChip.setEnabled(true);
                 //blueChip.setEnabled(true);
