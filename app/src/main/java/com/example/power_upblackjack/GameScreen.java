@@ -35,8 +35,6 @@ public class GameScreen extends AppCompatActivity {
     int clickCount = 1; // click count for the first row of cards
     int newCounter = 0; // click count for the second row of cards
 
-    int purpleClickCount = 0; // if > 1, keep dealer cards
-    boolean powerupUsed = false;
     boolean clairvoyanceUsed = false;
     boolean clairvoyanceDone = false;
 
@@ -202,7 +200,7 @@ public class GameScreen extends AppCompatActivity {
                     // game over and the player loses
                     // experimentally defined
                     gameCondition.setX((float) (purpleChip.getX() * 1.35));
-                    gameCondition.setY((float) (purpleChip.getY() * 1.17));
+                    gameCondition.setY((float) (purpleChip.getY() * 1.45));
                     gameCondition.setTextColor(getResources().getColor(R.color.black));
                     gameCondition.setText(R.string.lose_string);
                     cl.addView(gameCondition);
@@ -225,6 +223,12 @@ public class GameScreen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                // there are two possibilities for stand
+                // no powerup OR non-clairvoyance powerup (~80% of the time)
+                // clairvoyance powerup (~20% of the time)
+                // if clairvoyance is used, then use the same cards that are displayed via purple buttonClick
+                // else, create the cards on blue buttonClick
+
                 boolean shouldShowDealerCards;
 
                 if (! clairvoyanceUsed && ! clairvoyanceDone) { // the clairvoyance powerup is not used
@@ -236,201 +240,148 @@ public class GameScreen extends AppCompatActivity {
 
                 // generate dealer cards only if clairvoyance has not been used
                 if (shouldShowDealerCards) {
-
                     generateDealerCards();
-
-                    // check win condition
-
-                    TextView playerCountView = (TextView) findViewById(R.id.runningCountTextView);
-                    TextView dealerCountView = (TextView) findViewById(R.id.dealerTextView);
-
-                    int finalPlayerCount = getTextViewIntegerContents(playerCountView);
-                    int finalDealerCount = getTextViewIntegerContents(dealerCountView);
-
-                    System.out.println(finalPlayerCount);
-                    System.out.println(finalDealerCount);
-
-                    // check if either the player or the dealer busted
-                    // if both busted, the game is a tie
-                    // if one busted, the other wins
-                    // else, check which is higher and report accordingly
-
-
-                    TextView gameCondition = new TextView(GameScreen.this);
-                    ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
-
-                    if (finalPlayerCount > 21) {
-                        // if the player busts, regardless of the dealer's hand, the player loses
-                        gameCondition.setText(R.string.lose_string);
-                    }
-                    else if (finalPlayerCount <= 21 && finalDealerCount > 21) {
-                        gameCondition.setText(R.string.win_string);
-                    }
-                    else { // nobody busted
-                        if (finalPlayerCount > finalDealerCount) {
-                            gameCondition.setText(R.string.win_string);
-                        }
-                        else if (finalPlayerCount < finalDealerCount) {
-                            gameCondition.setText(R.string.lose_string);
-                        }
-                        else {
-                            gameCondition.setText(R.string.tie_string);
-                        }
-                    }
-
-                    // experimentally defined
-                    gameCondition.setX((float) (purpleChip.getX() * 1.35));
-                    gameCondition.setY((float) (purpleChip.getY() * 1.17));
-                    gameCondition.setTextColor(getResources().getColor(R.color.black));
-
-                    ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
-                    cl.addView(gameCondition);
-
-
-                    // once stand is chosen,
-                    // the game is over one way or another
-                    // https://stackoverflow.com/questions/9144215/how-to-make-a-button-press-once-and-then-not-pressable-anymore
-                    blueChip.setEnabled(false);
-                    redChip.setEnabled(false);
                 }
-                else { // powerup of clairvoyance is used
-                    TextView playerCountView = (TextView) findViewById(R.id.runningCountTextView);
-                    TextView dealerCountView = (TextView) findViewById(R.id.dealerTextView);
-
-                    int finalPlayerCount = getTextViewIntegerContents(playerCountView);
-                    int finalDealerCount = getTextViewIntegerContents(dealerCountView);
-
-                    TextView gameCondition = new TextView(GameScreen.this);
-                    ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
-
-                    if (finalPlayerCount > 21) {
-                        // if the player busts, regardless of the dealer's hand, the player loses
-                        gameCondition.setText(R.string.lose_string);
-                    }
-                    else if (finalPlayerCount <= 21 && finalDealerCount > 21) {
-                        gameCondition.setText(R.string.win_string);
-                    }
-                    else { // nobody busted
-                        if (finalPlayerCount > finalDealerCount) {
-                            gameCondition.setText(R.string.win_string);
-                        }
-                        else if (finalPlayerCount < finalDealerCount) {
-                            gameCondition.setText(R.string.lose_string);
-                        }
-                        else {
-                            gameCondition.setText(R.string.tie_string);
-                        }
-                    }
-
-                    // experimentally defined
-                    gameCondition.setX((float) (purpleChip.getX() * 1.35));
-                    gameCondition.setY((float) (purpleChip.getY() * 1.17));
-                    gameCondition.setTextColor(getResources().getColor(R.color.black));
-
-                    ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
-                    cl.addView(gameCondition);
-
-                    blueChip.setEnabled(true);
-                    redChip.setEnabled(true);
-
-
-
-
-
-                }
-
-
-            }
-        });
-
-        // start implementing powerups
-        // every time, the player gets a new powerup
-        // clairvoyance: reveal the dealer's hand - 0
-        // sabotage: add a random amount (1-4) to try to make them bust - 1
-        // incineration: get rid of one of your cards if you bust - 2
-        // transmutation: click one of your cards and replace it with a random card - 3
-        // joker: randomly replace your entire hand - 4
-
-
-        // generate random number for power-up
-        Random rand = new Random();
-        int powerupType = rand.nextInt(5); // 0-4, bound is exclusive
-        boolean clairvoyance = false;
-        boolean sabotage = false;
-        boolean incineration = false;
-        boolean transmutation = false;
-        boolean jokerPowerup = false;
-
-        ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
-        ImageView purpleChip = findViewById(R.id.purpleChipNoBg);
-        ImageView powerupImage = (ImageView) findViewById(R.id.replacePowerup);
-
-        if (powerupType == 0) {
-            clairvoyance = true;
-            powerupImage.setImageResource(R.drawable.clairvoyance);
-        }
-        else if (powerupType == 1) {
-            sabotage = true;
-            powerupImage.setImageResource(R.drawable.sabotage);
-        }
-        else if (powerupType == 2) {
-            incineration = true;
-            powerupImage.setImageResource(R.drawable.flames);
-        }
-        else if (powerupType == 3) {
-            transmutation = true;
-            powerupImage.setImageResource(R.drawable.transmutation);
-        }
-        else if (powerupType == 4) {
-            jokerPowerup = true;
-            powerupImage.setImageResource(R.drawable.joker_skull);
-        }
-
-        purpleChip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // start with clairyovance
-                // if clairvoyance is the powerup type,
-                // when the clairyovance button is clicked, reveal the dealer's hand
 
                 TextView playerCountView = (TextView) findViewById(R.id.runningCountTextView);
                 TextView dealerCountView = (TextView) findViewById(R.id.dealerTextView);
 
-                // once the clairvoyance button is clicked, go through the dealer's actions
-                // and leave the player the option to either hit or stand as desired
-                // when the player stands, the game ends as usual
+                int finalPlayerCount = getTextViewIntegerContents(playerCountView);
+                int finalDealerCount = getTextViewIntegerContents(dealerCountView);
 
-                // https://stackoverflow.com/questions/16732398/android-call-onclick-method-without-clicking
-                //blueChip.callOnClick();
+                TextView gameCondition = new TextView(GameScreen.this);
+                ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
 
-                // two booleans - one for using clairvoyance and one for generating the dealer cards
-                // the first boolean, clairvoyanceUsed, is initially false and becomes true onClick
-                // the second boolean, clairvoyanceDone, is initially false, and becomes true onClick
-                    // to permit the Stand button to end the game
-                powerupUsed = true;
-                clairvoyanceUsed = true;
+                if (finalPlayerCount > 21) {
+                    // if the player busts, regardless of the dealer's hand, the player loses
+                    gameCondition.setText(R.string.lose_string);
+                }
+                else if (finalPlayerCount <= 21 && finalDealerCount > 21) {
+                    gameCondition.setText(R.string.win_string);
+                }
+                else { // nobody busted
+                    if (finalPlayerCount > finalDealerCount) {
+                        gameCondition.setText(R.string.win_string);
+                    }
+                    else if (finalPlayerCount < finalDealerCount) {
+                        gameCondition.setText(R.string.lose_string);
+                    }
+                    else {
+                        gameCondition.setText(R.string.tie_string);
+                    }
+                }
 
-                generateDealerCards();
+                // experimentally defined
+                gameCondition.setX((float) (purpleChip.getX() * 1.35));
+                gameCondition.setY((float) (purpleChip.getY() * 1.45));
+                gameCondition.setTextColor(getResources().getColor(R.color.black));
 
-                clairvoyanceDone = true;
+                ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
+                cl.addView(gameCondition);
 
-                purpleChip.setEnabled(false); // can't call clairvoyance again
+                // if the clairvoyance powerup is used, the user can continue to hit or stand
+                // otherwise, the game must end
 
-
-                // if the clairvoyance button is clicked, then keep the dealer's total
-                // don't re-shuffle them
-
-                //redChip.setEnabled(true);
-                //blueChip.setEnabled(true);
-
-                //redChip.setEnabled(true);
-                //blueChip.setEnabled(true);
-
-
+                if (shouldShowDealerCards) { // not used
+                    blueChip.setEnabled(false);
+                    redChip.setEnabled(false);
+                    purpleChip.setEnabled(false); // can't use the powerup after the game
+                }
+                else {
+                    blueChip.setEnabled(true);
+                    redChip.setEnabled(true);
+                }
 
             }
-        });
+    });
+
+    // start implementing powerups
+    // every time, the player gets a new powerup
+    // clairvoyance: reveal the dealer's hand - 0
+    // sabotage: add a random amount (1-4) to try to make them bust - 1
+    // incineration: get rid of one of your cards if you bust - 2
+    // transmutation: click one of your cards and replace it with a random card - 3
+    // joker: randomly replace your entire hand - 4
+
+
+    // generate random number for power-up
+    Random rand = new Random();
+    int powerupType = rand.nextInt(5); // 0-4, bound is exclusive
+    boolean clairvoyance = false;
+    boolean sabotage = false;
+    boolean incineration = false;
+    boolean transmutation = false;
+    boolean jokerPowerup = false;
+
+    ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
+    ImageView purpleChip = findViewById(R.id.purpleChipNoBg);
+    ImageView powerupImage = (ImageView) findViewById(R.id.replacePowerup);
+
+        if (powerupType == 0) {
+        clairvoyance = true;
+        powerupImage.setImageResource(R.drawable.clairvoyance);
     }
+        else if (powerupType == 1) {
+        sabotage = true;
+        powerupImage.setImageResource(R.drawable.sabotage);
+    }
+        else if (powerupType == 2) {
+        incineration = true;
+        powerupImage.setImageResource(R.drawable.flames);
+    }
+        else if (powerupType == 3) {
+        transmutation = true;
+        powerupImage.setImageResource(R.drawable.transmutation);
+    }
+        else if (powerupType == 4) {
+        jokerPowerup = true;
+        powerupImage.setImageResource(R.drawable.joker_skull);
+    }
+
+        purpleChip.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            // start with clairyovance
+            // if clairvoyance is the powerup type,
+            // when the clairyovance button is clicked, reveal the dealer's hand
+
+            TextView playerCountView = (TextView) findViewById(R.id.runningCountTextView);
+            TextView dealerCountView = (TextView) findViewById(R.id.dealerTextView);
+
+            // once the clairvoyance button is clicked, go through the dealer's actions
+            // and leave the player the option to either hit or stand as desired
+            // when the player stands, the game ends as usual
+
+            // https://stackoverflow.com/questions/16732398/android-call-onclick-method-without-clicking
+            //blueChip.callOnClick();
+
+            // two booleans - one for using clairvoyance and one for generating the dealer cards
+            // the first boolean, clairvoyanceUsed, is initially false and becomes true onClick
+            // the second boolean, clairvoyanceDone, is initially false, and becomes true onClick
+            // to permit the Stand button to end the game
+            clairvoyanceUsed = true;
+
+            generateDealerCards();
+
+            clairvoyanceDone = true;
+
+            purpleChip.setEnabled(false); // can't call clairvoyance again
+
+
+            // if the clairvoyance button is clicked, then keep the dealer's total
+            // don't re-shuffle them
+
+            //redChip.setEnabled(true);
+            //blueChip.setEnabled(true);
+
+            //redChip.setEnabled(true);
+            //blueChip.setEnabled(true);
+
+
+
+        }
+    });
+}
 
     // https://stackoverflow.com/questions/18703841/call-method-on-activity-load-android
     @Override
@@ -558,14 +509,15 @@ public class GameScreen extends AppCompatActivity {
         // to make sure that ace works properly, check the textView for the current contents and then append the ace value
 
         if (cardValue1.contains("ace")) {
-            if ((textViewIntVal + 11) <= 21) { // if adding an ace would not result in a bust
+            // bugfix: textViewIntVal + 11 must be < 21 - two aces should be 12, not 22
+            if ((textViewIntVal + 11) < 21) { // if adding an ace would not result in a bust
                 runningCount += 11; // then add the maximum value to the running count
             } else { // else, just add the minimum value and bust
                 runningCount += 1;
             }
         }
         if (cardValue2.contains("ace")) {
-            if ((textViewIntVal + 11) <= 21) {
+            if ((textViewIntVal + 11) < 21) {
                 runningCount += 11;
             } else { // > 21
                 runningCount += 1;
