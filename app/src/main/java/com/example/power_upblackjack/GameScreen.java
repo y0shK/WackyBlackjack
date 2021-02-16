@@ -35,8 +35,15 @@ public class GameScreen extends AppCompatActivity {
     int clickCount = 1; // click count for the first row of cards
     int newCounter = 0; // click count for the second row of cards
 
+    boolean clairvoyance = false;
+    boolean sabotage = false;
+    boolean incineration = false;
+    boolean transmutation = false;
+    boolean jokerPowerup = false;
+
     boolean clairvoyanceUsed = false;
-    boolean clairvoyanceDone = false;
+
+    boolean sabotageUsed = false;
 
 
     public void generateDealerCards() {
@@ -230,15 +237,23 @@ public class GameScreen extends AppCompatActivity {
                 // else, create the cards on blue buttonClick
 
                 boolean shouldShowDealerCards;
+                int sabotageAddVal = 0;
 
-                if (! clairvoyanceUsed && ! clairvoyanceDone) { // the clairvoyance powerup is not used
-                    shouldShowDealerCards = true;
-                }
-                else { // the clairvoyance powerup is used and the game needs to end
+                // clairvoyance logic
+                if (clairvoyanceUsed) {
                     shouldShowDealerCards = false;
                 }
+                else { // the clairvoyance powerup is not used - generate new cards
+                    shouldShowDealerCards = true;
+                }
 
-                // generate dealer cards only if clairvoyance has not been used
+                // if sabotage is used, create cards here, not on button click
+                // the user shouldn't sabotage and know cards ahead of time
+                if (sabotageUsed) {
+                    shouldShowDealerCards = true;
+                }
+
+                // generate dealer cards if clairvoyance has not been used
                 if (shouldShowDealerCards) {
                     generateDealerCards();
                 }
@@ -248,6 +263,16 @@ public class GameScreen extends AppCompatActivity {
 
                 int finalPlayerCount = getTextViewIntegerContents(playerCountView);
                 int finalDealerCount = getTextViewIntegerContents(dealerCountView);
+
+                if (sabotageUsed) {
+                    Random rand = new Random();
+                    sabotageAddVal = rand.nextInt(4);
+
+                    String sabotageDealerCount = getString(R.string.sabotage_dealer_count, finalDealerCount, sabotageAddVal);
+                    dealerCountView.setText(sabotageDealerCount);
+
+                    finalDealerCount += sabotageAddVal;
+                }
 
                 TextView gameCondition = new TextView(GameScreen.this);
                 ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
@@ -307,11 +332,6 @@ public class GameScreen extends AppCompatActivity {
     // generate random number for power-up
     Random rand = new Random();
     int powerupType = rand.nextInt(5); // 0-4, bound is exclusive
-    boolean clairvoyance = false;
-    boolean sabotage = false;
-    boolean incineration = false;
-    boolean transmutation = false;
-    boolean jokerPowerup = false;
 
     ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
     ImageView purpleChip = findViewById(R.id.purpleChipNoBg);
@@ -338,6 +358,10 @@ public class GameScreen extends AppCompatActivity {
         powerupImage.setImageResource(R.drawable.joker_skull);
     }
 
+        // for debugging purposes
+        //clairvoyance = true;
+        //sabotage = true;
+
         purpleChip.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -359,13 +383,16 @@ public class GameScreen extends AppCompatActivity {
             // the first boolean, clairvoyanceUsed, is initially false and becomes true onClick
             // the second boolean, clairvoyanceDone, is initially false, and becomes true onClick
             // to permit the Stand button to end the game
-            clairvoyanceUsed = true;
 
-            generateDealerCards();
+            if (clairvoyance) {
+                generateDealerCards();
+                clairvoyanceUsed = true;
+            }
+            else if (sabotage) {
+                sabotageUsed = true;
+            }
 
-            clairvoyanceDone = true;
-
-            purpleChip.setEnabled(false); // can't call clairvoyance again
+            purpleChip.setEnabled(false); // can't call powerup again
 
 
             // if the clairvoyance button is clicked, then keep the dealer's total

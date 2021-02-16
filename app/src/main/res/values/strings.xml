@@ -7,6 +7,7 @@
     <string name="stand_card">Stand</string>
     <string name="new_card_id">newID</string>
     <string name="dealer_running_count">0</string>
+    <string name="sabotage_dealer_count">%1$d + %2$d</string>
     <string name="win_string">WIN</string>
     <string name="lose_string">LOSE</string>
     <string name="tie_string">TIE</string>
