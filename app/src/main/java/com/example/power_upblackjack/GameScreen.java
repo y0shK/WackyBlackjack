@@ -53,7 +53,14 @@ public class GameScreen extends AppCompatActivity {
 
     public void generateDealerCards() {
         TextView textViewToStand = (TextView) findViewById(R.id.runningCountTextView); // access TextView
-        int finalStandValue = getTextViewIntegerContents(textViewToStand);
+
+        int finalStandValue;
+        if (incinerationBust) {
+            finalStandValue = runningCountGlobal;
+        }
+        else {
+            finalStandValue = getTextViewIntegerContents(textViewToStand);
+        }
 
         // instantiate necessary ImageViews
         ImageView newDealerCard1 = new ImageView(GameScreen.this);
@@ -288,11 +295,11 @@ public class GameScreen extends AppCompatActivity {
                 TextView dealerCountView = (TextView) findViewById(R.id.dealerTextView);
 
                 int finalPlayerCount;
-                if (! incinerationBust) {
-                    finalPlayerCount = getTextViewIntegerContents(playerCountView);
+                if (incinerationBust) {
+                    finalPlayerCount = runningCountGlobal;
                 }
                 else {
-                    finalPlayerCount = runningCountGlobal;
+                    finalPlayerCount = getTextViewIntegerContents(playerCountView);
                 }
 
                 int finalDealerCount = getTextViewIntegerContents(dealerCountView);
@@ -546,7 +553,14 @@ public class GameScreen extends AppCompatActivity {
         // use the TextViewToChange for the player's running count
         // dealer textView is the dealer's running count
         TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
-        int textViewIntVal = getTextViewIntegerContents(textViewToChange);
+
+        int textViewIntVal;
+        if (incinerationBust) {
+            textViewIntVal = runningCountGlobal;
+        }
+        else {
+            textViewIntVal = getTextViewIntegerContents(textViewToChange);
+        }
 
         String[] valueNum = {"2", "3", "4", "5", "6", "7", "8", "9", "10"};
         String[] valueFace = {"jack", "queen", "king"}; // not ace - dealt with separately
