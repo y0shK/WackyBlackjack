@@ -37,6 +37,9 @@ public class GameScreen extends AppCompatActivity {
 
     int runningCountGlobal = 0;
 
+    boolean calledFromStand = false;
+    boolean calledFromTransmuteCard = false;
+
     boolean clairvoyance = false;
     boolean sabotage = false;
     boolean incineration = false;
@@ -50,8 +53,10 @@ public class GameScreen extends AppCompatActivity {
     boolean incinerationUsed = false;
     boolean incinerationBust = false;
 
+    boolean transmutationUsed = false;
 
-    public void generateDealerCards() {
+
+    public ImageView generateDealerCards() {
         TextView textViewToStand = (TextView) findViewById(R.id.runningCountTextView); // access TextView
 
         int finalStandValue;
@@ -85,26 +90,49 @@ public class GameScreen extends AppCompatActivity {
 
         TextView dealerTextView = (TextView) findViewById(R.id.dealerTextView);
 
-        while (runningCount < 17) {
-            ImageView newDealerCard = new ImageView(GameScreen.this);
-            TypedArray newImages = getResources().obtainTypedArray(R.array.apptour);
-            int choice = (int) (Math.random() * newImages.length());
+        // only reveal dealer cards for clairvoyance, not for transmutation
+        if (clairvoyanceUsed || calledFromStand) {
+            while (runningCount < 17) {
+                ImageView newDealerCard = new ImageView(GameScreen.this);
+                TypedArray newImages = getResources().obtainTypedArray(R.array.apptour);
+                int choice = (int) (Math.random() * newImages.length());
 
-            newDealerCard.setImageResource(newImages.getResourceId(choice, R.drawable.back_red_basic)); // random png
+                newDealerCard.setImageResource(newImages.getResourceId(choice, R.drawable.back_red_basic)); // random png
 
-            cl.addView(newDealerCard);
+                cl.addView(newDealerCard);
 
-            newDealerCard.setX(dealerXCoor + dealerCardAddMultiplier * distanceCards);
-            newDealerCard.setY(dealerYCoor);
+                newDealerCard.setX(dealerXCoor + dealerCardAddMultiplier * distanceCards);
+                newDealerCard.setY(dealerYCoor);
 
-            dealerCount = trackRunningCount(newImages, choice, -1, dealerTextView);
-            runningCount += dealerCount;
+                dealerCount = trackRunningCount(newImages, choice, -1, dealerTextView);
+                runningCount += dealerCount;
 
-            String dealerCountStr = Integer.toString(runningCount);
-            dealerTextView.setText(dealerCountStr);
+                String dealerCountStr = Integer.toString(runningCount);
+                dealerTextView.setText(dealerCountStr);
 
-            dealerCardAddMultiplier++;
+                dealerCardAddMultiplier++;
+            }
         }
+
+        return card2;
+    }
+
+    public int transmuteCard(ImageView card1, ImageView card2) { // returns count
+
+        calledFromTransmuteCard = true;
+
+        TypedArray newImages = getResources().obtainTypedArray(R.array.apptour);
+        int choice1 = (int) (Math.random() * newImages.length());
+        int choice2 = (int) (Math.random() * newImages.length());
+
+        int transmutatationRunningCount = 0;
+        TextView textViewToChange = findViewById(R.id.runningCountTextView);
+        transmutatationRunningCount += trackRunningCount(newImages, choice1, choice2, textViewToChange);
+
+        card1.setImageResource(newImages.getResourceId(choice1, R.drawable.back_red_basic)); // random png
+        card2.setImageResource(newImages.getResourceId(choice2, R.drawable.back_red_basic));
+
+        return transmutatationRunningCount;
     }
 
     @Override
@@ -269,6 +297,7 @@ public class GameScreen extends AppCompatActivity {
                 // if clairvoyance is used, then use the same cards that are displayed via purple buttonClick
                 // else, create the cards on blue buttonClick
 
+                calledFromStand = true;
                 boolean shouldShowDealerCards;
                 int sabotageAddVal = 0;
 
@@ -283,6 +312,11 @@ public class GameScreen extends AppCompatActivity {
                 // if sabotage is used, create cards here, not on button click
                 // the user shouldn't sabotage and know cards ahead of time
                 if (sabotageUsed) {
+                    shouldShowDealerCards = true;
+                }
+
+                // generate dealer cards if transmutation used
+                if (transmutationUsed && calledFromStand) {
                     shouldShowDealerCards = true;
                 }
 
@@ -401,7 +435,8 @@ public class GameScreen extends AppCompatActivity {
         // for debugging purposes
         clairvoyance = false;
         sabotage = false;
-        incineration = true;
+        incineration = false;
+        transmutation = true;
 
         purpleChip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -434,6 +469,24 @@ public class GameScreen extends AppCompatActivity {
                 }
                 else if (incineration) {
                     incinerationUsed = true;
+                }
+                else if (transmutation) {
+
+                    transmutationUsed = true;
+
+                    // make sure that the running count text is also updated
+
+                    TextView runningCount = findViewById(R.id.runningCountTextView);
+                    int runningCountVal = getTextViewIntegerContents(runningCount);
+
+                    //ImageView card2 = generateDealerCards();
+                    ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
+                    ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
+
+                    int cardValInt = transmuteCard(card1, card2);
+                    runningCount.setText(Integer.toString(cardValInt));
+
+
                 }
 
                 purpleChip.setEnabled(false); // can't call powerup again
@@ -523,6 +576,13 @@ public class GameScreen extends AppCompatActivity {
     }
 
     public int trackRunningCount(TypedArray imagesProvided, int choice1Param, int choice2Param, TextView toChange) {
+
+        // if imagesProvided is null,
+        // just pass choice1Param + choice2Param
+        if (imagesProvided == null) {
+            return choice1Param + choice2Param;
+        }
+
         // figure out the cumulative value of each of the player's cards
 
         // instantiate the variable that will hold the contents of each card
@@ -557,6 +617,9 @@ public class GameScreen extends AppCompatActivity {
         int textViewIntVal;
         if (incinerationBust) {
             textViewIntVal = runningCountGlobal;
+        }
+        else if (calledFromTransmuteCard) {
+            textViewIntVal = 0; // make ace logic work correctly - otherwise, it will think RC > 11, so ace is 1
         }
         else {
             textViewIntVal = getTextViewIntegerContents(textViewToChange);
@@ -611,4 +674,5 @@ public class GameScreen extends AppCompatActivity {
         return runningCount;
 
     }
+
 }
