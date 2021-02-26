@@ -59,17 +59,7 @@ public class GameScreen extends AppCompatActivity {
     public ImageView generateDealerCards() {
         TextView textViewToStand = (TextView) findViewById(R.id.runningCountTextView); // access TextView
 
-        int finalStandValue;
-        if (incinerationBust) {
-            finalStandValue = runningCountGlobal;
-        }
-        else {
-            finalStandValue = getTextViewIntegerContents(textViewToStand);
-        }
-
         // instantiate necessary ImageViews
-        ImageView newDealerCard1 = new ImageView(GameScreen.this);
-        ImageView newDealerCard2 = new ImageView(GameScreen.this);
         ImageView cardStack = (ImageView) findViewById(R.id.cardStack);
 
         // instantiate old imageViews to find x distance
@@ -278,10 +268,6 @@ public class GameScreen extends AppCompatActivity {
                     }
                     redChip.setEnabled(false);
                 }
-
-
-                //gameCondition.add
-
             }
 
         });
@@ -433,10 +419,10 @@ public class GameScreen extends AppCompatActivity {
         }
 
         // for debugging purposes
-        clairvoyance = false;
-        sabotage = false;
-        incineration = false;
-        transmutation = true;
+        //clairvoyance = false;
+        //sabotage = false;
+        //incineration = false;
+        //transmutation = true;
 
         purpleChip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -461,8 +447,9 @@ public class GameScreen extends AppCompatActivity {
                 // to permit the Stand button to end the game
 
                 if (clairvoyance) {
-                    generateDealerCards();
+                    // needs to come first so generateDealerCards actually displays the cards
                     clairvoyanceUsed = true;
+                    generateDealerCards();
                 }
                 else if (sabotage) {
                     sabotageUsed = true;
@@ -485,24 +472,9 @@ public class GameScreen extends AppCompatActivity {
 
                     int cardValInt = transmuteCard(card1, card2);
                     runningCount.setText(Integer.toString(cardValInt));
-
-
                 }
 
                 purpleChip.setEnabled(false); // can't call powerup again
-
-
-                // if the clairvoyance button is clicked, then keep the dealer's total
-                // don't re-shuffle them
-
-                //redChip.setEnabled(true);
-                //blueChip.setEnabled(true);
-
-                //redChip.setEnabled(true);
-                //blueChip.setEnabled(true);
-
-
-
             }
         });
     }
