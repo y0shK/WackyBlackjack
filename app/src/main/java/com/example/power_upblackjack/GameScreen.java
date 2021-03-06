@@ -62,8 +62,7 @@ public class GameScreen extends AppCompatActivity {
     boolean transmutationUsed = false;
 
     boolean jokerUsed = false;
-    boolean jokerAfterHit = false;
-    boolean jokerComplete = false;
+    boolean jokerBust = false;
 
     public ImageView generateDealerCards() {
         TextView textViewToStand = (TextView) findViewById(R.id.runningCountTextView); // access TextView
@@ -237,11 +236,6 @@ public class GameScreen extends AppCompatActivity {
                 String runningCountStr = Integer.toString(runningCount);
                 textViewToChange.setText(runningCountStr);
 
-                boolean jokerBust = false;
-
-                // joker can be used at any time as long as the player hasn't busted
-
-
                 // putting the check to see if the player is > 21 here ensures that any bust is caught immediately,
                 // not the next time a card is hit
 
@@ -252,7 +246,7 @@ public class GameScreen extends AppCompatActivity {
                 ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
                 TextView gameCondition = new TextView(GameScreen.this);
 
-                if (getTextViewIntegerContents(textViewToChange) > 21) {
+                if (getTextViewIntegerContents(textViewToChange) > 21 || jokerBust) { // joker leads to bust
 
                     // if incineration occurs, then show the card that led to the bust
                     // remove the amount of the card from the running count
@@ -267,9 +261,6 @@ public class GameScreen extends AppCompatActivity {
                         runningCountGlobal = runningCount;
                         //generateDealerCards();
                         //blueChip.performClick();
-                    }
-                    else if (jokerUsed) { // account for using "hit" and then the joker powerup
-                        textViewToChange.setText(runningCountStr);
                     }
                     else {
                         // if bust occurs,
@@ -441,11 +432,11 @@ public class GameScreen extends AppCompatActivity {
         }
 
         // for debugging purposes
-        clairvoyance = false;
-        sabotage = false;
-        incineration = false;
-        transmutation = false;
-        jokerPowerup = true;
+        // clairvoyance = false;
+        // sabotage = false;
+        // incineration = false;
+        // transmutation = false;
+        // jokerPowerup = true;
 
         purpleChip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -506,21 +497,33 @@ public class GameScreen extends AppCompatActivity {
                 // OR we did hit, the first two cards changed, and the rest & RC change as well
                 else if (jokerPowerup) {
 
+                    TextView runningCount = findViewById(R.id.runningCountTextView);
+                    ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
+                    ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
+                    int cardValInt = transmuteCard(card1, card2);
+
                     if (! hitCard) {
-                        jokerAfterHit = false;
-
-                        TextView runningCount = findViewById(R.id.runningCountTextView);
-                        int runningCountVal = getTextViewIntegerContents(runningCount);
-
-                        //ImageView card2 = generateDealerCards();
-                        ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
-                        ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
-
-                        int cardValInt = transmuteCard(card1, card2);
                         runningCount.setText(Integer.toString(cardValInt));
                     }
                     else {
-                        jokerAfterHit = true;
+                        cardValInt += nonStarterCardCount;
+                        runningCount.setText(Integer.toString(cardValInt));
+
+                        if (cardValInt > 21) {
+                            TextView gameCondition = new TextView(GameScreen.this);
+                            gameCondition.setX((float) (purpleChip.getX() * 1.35));
+                            gameCondition.setY((float) (purpleChip.getY() * 1.45));
+                            gameCondition.setTextColor(getResources().getColor(R.color.black));
+
+                            gameCondition.setText(R.string.lose_string);
+                            cl.addView(gameCondition);
+
+                            // joker led to bust
+                            // the game is over
+                            // https://stackoverflow.com/questions/9144215/how-to-make-a-button-press-once-and-then-not-pressable-anymore
+                            blueChip.setEnabled(false);
+                            redChip.setEnabled(false);
+                        }
                     }
 
                     jokerUsed = true;
