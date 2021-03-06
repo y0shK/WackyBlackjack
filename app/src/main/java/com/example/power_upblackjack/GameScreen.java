@@ -2,32 +2,17 @@ package com.example.power_upblackjack;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.io.File;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Random;
 
 public class GameScreen extends AppCompatActivity {
@@ -35,13 +20,12 @@ public class GameScreen extends AppCompatActivity {
     int clickCount = 1; // click count for the first row of cards
     int newCounter = 0; // click count for the second row of cards
 
+    // count of cards and "hit" cards
     int cardCount = 2;
-    // int temp = 0; // keep track of each temp card as it's added, give it a global scope
     int nonStarterCardCount = 0;
-
     boolean hitCard = false;
 
-    int runningCountGlobal = 0;
+    int runningCountGlobal = 0; // set to runningCount in case of incineration
 
     boolean calledFromStand = false;
     boolean calledFromTransmuteCard = false;
@@ -64,20 +48,17 @@ public class GameScreen extends AppCompatActivity {
     boolean jokerUsed = false;
     boolean jokerBust = false;
 
-    public ImageView generateDealerCards() {
-        TextView textViewToStand = (TextView) findViewById(R.id.runningCountTextView); // access TextView
-
+    public void generateDealerCards() {
         // instantiate necessary ImageViews
-        ImageView cardStack = (ImageView) findViewById(R.id.cardStack);
+        ImageView cardStack = findViewById(R.id.cardStack);
 
         // instantiate old imageViews to find x distance
-        ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
-        ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
+        ImageView card1 = findViewById(R.id.playerCard1);
+        ImageView card2 = findViewById(R.id.playerCard2);
 
         // x distance
         float distanceCards = card2.getX() - card1.getX();
-
-        ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
+        ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
 
         float dealerXCoor = cardStack.getX();
         float dealerYCoor = cardStack.getY();
@@ -86,10 +67,11 @@ public class GameScreen extends AppCompatActivity {
         int runningCount = 0;
         int dealerCardAddMultiplier = 1;
 
-        TextView dealerTextView = (TextView) findViewById(R.id.dealerTextView);
+        TextView dealerTextView = findViewById(R.id.dealerTextView);
 
         // only reveal dealer cards for clairvoyance, not for transmutation
         if (clairvoyanceUsed || calledFromStand) {
+            // keep hitting as long as the count < 17 by getting an ImageView & += to RC
             while (runningCount < 17) {
                 ImageView newDealerCard = new ImageView(GameScreen.this);
                 TypedArray newImages = getResources().obtainTypedArray(R.array.apptour);
@@ -111,26 +93,24 @@ public class GameScreen extends AppCompatActivity {
                 dealerCardAddMultiplier++;
             }
         }
-
-        return card2;
     }
 
     public int transmuteCard(ImageView card1, ImageView card2) { // returns count
-
         calledFromTransmuteCard = true;
 
+        // same process as generateDealerCards()
         TypedArray newImages = getResources().obtainTypedArray(R.array.apptour);
         int choice1 = (int) (Math.random() * newImages.length());
         int choice2 = (int) (Math.random() * newImages.length());
 
-        int transmutatationRunningCount = 0;
+        int transmutationRunningCount = 0;
         TextView textViewToChange = findViewById(R.id.runningCountTextView);
-        transmutatationRunningCount += trackRunningCount(newImages, choice1, choice2, textViewToChange);
+        transmutationRunningCount += trackRunningCount(newImages, choice1, choice2, textViewToChange);
 
         card1.setImageResource(newImages.getResourceId(choice1, R.drawable.back_red_basic)); // random png
         card2.setImageResource(newImages.getResourceId(choice2, R.drawable.back_red_basic));
 
-        return transmutatationRunningCount;
+        return transmutationRunningCount;
     }
 
     @Override
@@ -148,7 +128,7 @@ public class GameScreen extends AppCompatActivity {
         Intent playGameIntent = getIntent();
 
         // https://stackoverflow.com/questions/23805711/trying-to-create-imageview-when-click-the-button
-        ImageView redChip = (ImageView) findViewById(R.id.redPokerChipNoBg);
+        ImageView redChip = findViewById(R.id.redPokerChipNoBg);
         redChip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,20 +136,19 @@ public class GameScreen extends AppCompatActivity {
                 hitCard = true;
 
                 // https://stackoverflow.com/questions/17417571/how-many-times-a-button-is-clicked-in-android
-
                 // create the new card programmatically
                 ImageView newCard = new ImageView(GameScreen.this);
 
                 // find ID of constraintLayout to reference the xml file to add the card to
-                ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
+                ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
 
                 // the goal is to programmatically add cards instead of experimentally locating them
                 // find the xy coordinates of each card, then place each card a fixed distance away from the previous card
                 // for the second row, re-locate the initial x coordinate below the first row, then repeat
 
                 // instantiate cards to reference them later
-                ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
-                ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
+                ImageView card1 = findViewById(R.id.playerCard1);
+                ImageView card2 = findViewById(R.id.playerCard2);
 
                 // x distance
                 float distanceCards = card2.getX() - card1.getX();
@@ -179,18 +158,16 @@ public class GameScreen extends AppCompatActivity {
                 float card2YCoor = card2.getY();
 
                 float newXCoor = card2XCoor; // initially, then add space between cards below
-                float constYCoor = card2YCoor; // the same until the second row is added
 
                 // create the x distance between cards
                 float xShift = clickCount * distanceCards; // card n X = card n-1 X + xShift
                 newXCoor += xShift;
                 clickCount += 1;
                 cardCount += 1;
-                //System.out.println(cardCount);
 
                 // https://stackoverflow.com/questions/6418726/android-setting-x-y-of-image-programmatically
                 newCard.setX(newXCoor);
-                newCard.setY(constYCoor);
+                newCard.setY(card2YCoor);
 
                 // check if card goes off the screen
                 // if it goes off the screen, wrap the x back to the initial spot and increment again
@@ -199,7 +176,7 @@ public class GameScreen extends AppCompatActivity {
                     // reset the x coordinate
                     // start incrementing the distance between cards - newCounter is initially 0, then the distance is added to the coordinate
                     newCard.setX(card1.getX() + newCounter * distanceCards);
-                    newCard.setY(constYCoor + 100);
+                    newCard.setY(card2YCoor + 100);
                     newCounter++; // only for second row
                 }
 
@@ -210,25 +187,23 @@ public class GameScreen extends AppCompatActivity {
                 int choice = (int) (Math.random() * newImages.length());
 
                 newCard.setImageResource(newImages.getResourceId(choice, R.drawable.back_red_basic)); // random png
-
                 cl.addView(newCard);
 
                 // https://stackoverflow.com/questions/4768969/how-do-i-change-textview-value-inside-java-code
                 // before this block of code, the TextView shows the combined value of the initial two cards given
                 // now, access the TextView, convert its content to int, add any new cards' value, and release the new value as TextView output
 
-                TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView); // access TextView
+                TextView textViewToChange = findViewById(R.id.runningCountTextView); // access TextView
 
-                // // use pre-defined method to take textView contents of CharSequence, convert to str, then int
+                // use pre-defined method to take textView contents of CharSequence, convert to str, then int
                 int runningCount = getTextViewIntegerContents(textViewToChange);
-
-                //CharSequence previousRunningCountChars = textViewToChange.getText();
-                //String previousRunningCountStr = previousRunningCountChars.toString();
-                //int runningCount = Integer.parseInt(previousRunningCountStr);
 
                 // each time "hit" command is activated, a new card is added, and the count increases
                 // trackRunningCount has 2 params for the initial 2 cards dealt out
                 // however, additional cards are dealt one at a time, so the -1 parameter is a dummy param
+
+                // keep the current card's count as a temp variable,
+                // then add it to RC and keep track of it for powerup -= or +=
                 int temp = trackRunningCount(newImages, choice, -1, textViewToChange);
                 runningCount += temp;
                 nonStarterCardCount += temp;
@@ -241,9 +216,8 @@ public class GameScreen extends AppCompatActivity {
 
                 // set the appropriate variables so that if a bust occurs,
                 // an automatic game over will also occur
-
-                ImageView blueChip = (ImageView) findViewById(R.id.bluePokerChipNoBg);
-                ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
+                ImageView blueChip = findViewById(R.id.bluePokerChipNoBg);
+                ImageView purpleChip = findViewById(R.id.purpleChipNoBg);
                 TextView gameCondition = new TextView(GameScreen.this);
 
                 if (getTextViewIntegerContents(textViewToChange) > 21 || jokerBust) { // joker leads to bust
@@ -253,14 +227,13 @@ public class GameScreen extends AppCompatActivity {
                     // and auto-hit the stand button
 
                     if (incineration) {
-                        // newCard.setVisibility(View.VISIBLE); // invisible and doesn't take up layout space
                         runningCountStr = getString(R.string.incineration_player_count, runningCount, temp);
                         runningCount -= temp;
+
                         textViewToChange.setText(runningCountStr);
+
                         incinerationBust = true;
                         runningCountGlobal = runningCount;
-                        //generateDealerCards();
-                        //blueChip.performClick();
                     }
                     else {
                         // if bust occurs,
@@ -315,7 +288,7 @@ public class GameScreen extends AppCompatActivity {
                 }
 
                 // generate dealer cards if transmutation used
-                if (transmutationUsed && calledFromStand) {
+                if (transmutationUsed) {
                     shouldShowDealerCards = true;
                 }
 
@@ -324,10 +297,12 @@ public class GameScreen extends AppCompatActivity {
                     generateDealerCards();
                 }
 
-                TextView playerCountView = (TextView) findViewById(R.id.runningCountTextView);
-                TextView dealerCountView = (TextView) findViewById(R.id.dealerTextView);
+                TextView playerCountView = findViewById(R.id.runningCountTextView);
+                TextView dealerCountView = findViewById(R.id.dealerTextView);
 
                 int finalPlayerCount;
+
+                // take care of the case where the textView is a - b (and just get an int)
                 if (incinerationBust) {
                     finalPlayerCount = runningCountGlobal;
                 }
@@ -337,6 +312,7 @@ public class GameScreen extends AppCompatActivity {
 
                 int finalDealerCount = getTextViewIntegerContents(dealerCountView);
 
+                // add a random value to the dealer's card; hopefully, they go over 21
                 if (sabotageUsed) {
                     Random rand = new Random();
                     sabotageAddVal = rand.nextInt(4);
@@ -348,13 +324,13 @@ public class GameScreen extends AppCompatActivity {
                 }
 
                 TextView gameCondition = new TextView(GameScreen.this);
-                ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
+                ImageView purpleChip = findViewById(R.id.purpleChipNoBg);
 
                 if (finalPlayerCount > 21) {
                     // if the player busts, regardless of the dealer's hand, the player loses
                     gameCondition.setText(R.string.lose_string);
                 }
-                else if (finalPlayerCount <= 21 && finalDealerCount > 21) {
+                else if (finalDealerCount > 21) { // player count is definitely <= 21
                     gameCondition.setText(R.string.win_string);
                 }
                 else { // nobody busted
@@ -396,19 +372,18 @@ public class GameScreen extends AppCompatActivity {
         // start implementing powerups
         // every time, the player gets a new powerup
         // clairvoyance: reveal the dealer's hand - 0
-        // sabotage: add a random amount (1-4) to try to make them bust - 1
-        // incineration: get rid of one of your cards if you bust - 2
-        // transmutation: click one of your cards and replace it with a random card - 3
-        // joker: randomly replace your entire hand - 4
-
+        // sabotage: add a random amount (1-4) to try to make the dealer bust - 1
+        // incineration: disregard the hand that made the player bust ("RC - lastCardVal") - 2
+        // transmutation: change the first two cards in your hand; only playable before hitting - 3
+        // joker: same as transmutation, but playable after hitting as well - 4
 
         // generate random number for power-up
         Random rand = new Random();
         int powerupType = rand.nextInt(5); // 0-4, bound is exclusive
 
-        ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
+        ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
         ImageView purpleChip = findViewById(R.id.purpleChipNoBg);
-        ImageView powerupImage = (ImageView) findViewById(R.id.replacePowerup);
+        ImageView powerupImage = findViewById(R.id.replacePowerup);
 
         if (powerupType == 0) {
             clairvoyance = true;
@@ -431,13 +406,6 @@ public class GameScreen extends AppCompatActivity {
             powerupImage.setImageResource(R.drawable.joker_skull);
         }
 
-        // for debugging purposes
-        // clairvoyance = false;
-        // sabotage = false;
-        // incineration = false;
-        // transmutation = false;
-        // jokerPowerup = true;
-
         purpleChip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -445,15 +413,11 @@ public class GameScreen extends AppCompatActivity {
                 // if clairvoyance is the powerup type,
                 // when the clairyovance button is clicked, reveal the dealer's hand
 
-                TextView playerCountView = (TextView) findViewById(R.id.runningCountTextView);
-                TextView dealerCountView = (TextView) findViewById(R.id.dealerTextView);
-
                 // once the clairvoyance button is clicked, go through the dealer's actions
                 // and leave the player the option to either hit or stand as desired
                 // when the player stands, the game ends as usual
 
                 // https://stackoverflow.com/questions/16732398/android-call-onclick-method-without-clicking
-                //blueChip.callOnClick();
 
                 // two booleans - one for using clairvoyance and one for generating the dealer cards
                 // the first boolean, clairvoyanceUsed, is initially false and becomes true onClick
@@ -472,42 +436,38 @@ public class GameScreen extends AppCompatActivity {
                     incinerationUsed = true;
                 }
                 else if (transmutation) {
-
                     transmutationUsed = true;
 
                     // make sure that the running count text is also updated
-
                     // only use transmutation if there are only two cards
                     if (! hitCard) {
                         TextView runningCount = findViewById(R.id.runningCountTextView);
-                        int runningCountVal = getTextViewIntegerContents(runningCount);
 
                         //ImageView card2 = generateDealerCards();
-                        ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
-                        ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
+                        ImageView card1 = findViewById(R.id.playerCard1);
+                        ImageView card2 = findViewById(R.id.playerCard2);
 
                         int cardValInt = transmuteCard(card1, card2);
-                        runningCount.setText(Integer.toString(cardValInt));
+                        runningCount.setText(String.format(Locale.getDefault(), "%d", cardValInt));
                     }
-
-
                 }
+
                 // two cases for joker
                 // we didn't "hit," so joker acts the same as transmutation
                 // OR we did hit, the first two cards changed, and the rest & RC change as well
                 else if (jokerPowerup) {
 
                     TextView runningCount = findViewById(R.id.runningCountTextView);
-                    ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
-                    ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
+                    ImageView card1 = findViewById(R.id.playerCard1);
+                    ImageView card2 = findViewById(R.id.playerCard2);
                     int cardValInt = transmuteCard(card1, card2);
 
                     if (! hitCard) {
-                        runningCount.setText(Integer.toString(cardValInt));
+                        runningCount.setText(String.format(Locale.getDefault(), "%d", cardValInt));
                     }
                     else {
                         cardValInt += nonStarterCardCount;
-                        runningCount.setText(Integer.toString(cardValInt));
+                        runningCount.setText(String.format(Locale.getDefault(), "%d", cardValInt));
 
                         if (cardValInt > 21) {
                             TextView gameCondition = new TextView(GameScreen.this);
@@ -538,7 +498,7 @@ public class GameScreen extends AppCompatActivity {
     @Override
     protected void onStart()
     {
-        ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutID);
+        ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
 
         // set poker green hex code in colors.xml
         // #35654d
@@ -548,14 +508,14 @@ public class GameScreen extends AppCompatActivity {
         try {
             this.getSupportActionBar().hide();
         }
-        catch (NullPointerException e) {
+        catch (NullPointerException ignored) {
 
         }
 
         super.onStart();
         getRandomCard();
-        ImageView purpleChip = (ImageView) findViewById(R.id.purpleChipNoBg);
-        ImageView redChip = (ImageView) findViewById(R.id.redPokerChipNoBg);
+        ImageView purpleChip = findViewById(R.id.purpleChipNoBg);
+        ImageView redChip = findViewById(R.id.redPokerChipNoBg);
         purpleChip.setY(redChip.getY());
     }
 
@@ -565,41 +525,33 @@ public class GameScreen extends AppCompatActivity {
         CharSequence cs = tv.getText();
 
         String str = cs.toString();
-        int intVal = Integer.parseInt(str);
-        return intVal;
+        return Integer.parseInt(str);
     }
 
-    public TypedArray getRandomCard() {
-        ImageView img1 = ((ImageView)findViewById(R.id.playerCard1));
-        ImageView img2 = ((ImageView)findViewById(R.id.playerCard2));
+    public void getRandomCard() {
+        ImageView img1 = findViewById(R.id.playerCard1);
+        ImageView img2 = findViewById(R.id.playerCard2);
 
         // take the values from arrays.xml and create a TypedArray
         // then select a random array element and set the image resource accordingly
         // recycle the TypedArray - doing so is good practice
-
 
         // https://stackoverflow.com/questions/15097950/adding-imageview-to-the-layout-programmatically
         // https://stackoverflow.com/questions/3497074/how-to-select-from-resources-randomly-r-drawable-xxxx
         TypedArray images = getResources().obtainTypedArray(R.array.apptour);
         int choice1 = (int) (Math.random() * images.length());
         int choice2 = (int) (Math.random() * images.length());
-        TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
+        TextView textViewToChange = findViewById(R.id.runningCountTextView);
 
         img1.setImageResource(images.getResourceId(choice1, R.drawable.back_red_basic)); // random png
         img2.setImageResource(images.getResourceId(choice2, R.drawable.back_red_basic)); // random png
 
-        //img1.setTag(images.getResourceId(choice1, R.drawable.back_red_basic));
-        //img2.setTag(images.getResourceId(choice2, R.drawable.back_red_basic));
-
         trackRunningCount(images, choice1, choice2, textViewToChange);
 
-        TypedArray nonRecycledArray = images;
         images.recycle(); // https://stackoverflow.com/questions/21354501/typed-array-should-be-recycled-after-use-with-recycle
 
         // https://stackoverflow.com/questions/19602601/create-an-arraylist-with-multiple-object-types
         // ArrayList<Object> randomCardInfo = new ArrayList <Object>();
-
-        return nonRecycledArray;
     }
 
     public int trackRunningCount(TypedArray imagesProvided, int choice1Param, int choice2Param, TextView toChange) {
@@ -611,7 +563,6 @@ public class GameScreen extends AppCompatActivity {
         }
 
         // figure out the cumulative value of each of the player's cards
-
         // instantiate the variable that will hold the contents of each card
         // but don't define them until error checking is conducted
         String cardValue1;
@@ -631,15 +582,12 @@ public class GameScreen extends AppCompatActivity {
             cardValue2 = "-1";
         }
 
-        //System.out.println(cardValue1);
-        //System.out.println(cardValue2);
-
         int runningCount = 0;
 
         // get the value of the textView and extract the integer contents
         // use the TextViewToChange for the player's running count
         // dealer textView is the dealer's running count
-        TextView textViewToChange = (TextView) findViewById(R.id.runningCountTextView);
+        TextView textViewToChange = findViewById(R.id.runningCountTextView);
 
         int textViewIntVal;
         if (incinerationBust) {
@@ -692,6 +640,11 @@ public class GameScreen extends AppCompatActivity {
             }
         }
 
+        if (cardValue1.contains("ace") && cardValue2.contains("ace")) {
+            toChange.setText(String.format(Locale.getDefault(), "%d", 12)); // 11 + 1
+            return 12;
+        }
+
         // https://stackoverflow.com/questions/4768969/how-do-i-change-textview-value-inside-java-code
         String runningCountStr = Integer.toString(runningCount);
 
@@ -699,7 +652,5 @@ public class GameScreen extends AppCompatActivity {
         toChange.setText(runningCountStr); // this setText is for the initial two cards' value
 
         return runningCount;
-
     }
-
 }
