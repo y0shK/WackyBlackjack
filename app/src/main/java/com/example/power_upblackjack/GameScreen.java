@@ -448,6 +448,7 @@ public class GameScreen extends AppCompatActivity {
                         ImageView card2 = findViewById(R.id.playerCard2);
 
                         int cardValInt = transmuteCard(card1, card2);
+                        // https://stackoverflow.com/questions/33051309/number-formatting-does-not-take-into-account-locale-settings-consider-using-str/34616499
                         runningCount.setText(String.format(Locale.getDefault(), "%d", cardValInt));
                     }
                 }
