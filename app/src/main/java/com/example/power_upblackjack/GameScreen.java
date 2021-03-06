@@ -35,6 +35,12 @@ public class GameScreen extends AppCompatActivity {
     int clickCount = 1; // click count for the first row of cards
     int newCounter = 0; // click count for the second row of cards
 
+    int cardCount = 2;
+    // int temp = 0; // keep track of each temp card as it's added, give it a global scope
+    int nonStarterCardCount = 0;
+
+    boolean hitCard = false;
+
     int runningCountGlobal = 0;
 
     boolean calledFromStand = false;
@@ -55,6 +61,9 @@ public class GameScreen extends AppCompatActivity {
 
     boolean transmutationUsed = false;
 
+    boolean jokerUsed = false;
+    boolean jokerAfterHit = false;
+    boolean jokerComplete = false;
 
     public ImageView generateDealerCards() {
         TextView textViewToStand = (TextView) findViewById(R.id.runningCountTextView); // access TextView
@@ -145,6 +154,8 @@ public class GameScreen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                hitCard = true;
+
                 // https://stackoverflow.com/questions/17417571/how-many-times-a-button-is-clicked-in-android
 
                 // create the new card programmatically
@@ -175,6 +186,8 @@ public class GameScreen extends AppCompatActivity {
                 float xShift = clickCount * distanceCards; // card n X = card n-1 X + xShift
                 newXCoor += xShift;
                 clickCount += 1;
+                cardCount += 1;
+                //System.out.println(cardCount);
 
                 // https://stackoverflow.com/questions/6418726/android-setting-x-y-of-image-programmatically
                 newCard.setX(newXCoor);
@@ -219,9 +232,15 @@ public class GameScreen extends AppCompatActivity {
                 // however, additional cards are dealt one at a time, so the -1 parameter is a dummy param
                 int temp = trackRunningCount(newImages, choice, -1, textViewToChange);
                 runningCount += temp;
+                nonStarterCardCount += temp;
 
                 String runningCountStr = Integer.toString(runningCount);
                 textViewToChange.setText(runningCountStr);
+
+                boolean jokerBust = false;
+
+                // joker can be used at any time as long as the player hasn't busted
+
 
                 // putting the check to see if the player is > 21 here ensures that any bust is caught immediately,
                 // not the next time a card is hit
@@ -248,6 +267,9 @@ public class GameScreen extends AppCompatActivity {
                         runningCountGlobal = runningCount;
                         //generateDealerCards();
                         //blueChip.performClick();
+                    }
+                    else if (jokerUsed) { // account for using "hit" and then the joker powerup
+                        textViewToChange.setText(runningCountStr);
                     }
                     else {
                         // if bust occurs,
@@ -419,10 +441,11 @@ public class GameScreen extends AppCompatActivity {
         }
 
         // for debugging purposes
-        //clairvoyance = false;
-        //sabotage = false;
-        //incineration = false;
-        //transmutation = true;
+        clairvoyance = false;
+        sabotage = false;
+        incineration = false;
+        transmutation = false;
+        jokerPowerup = true;
 
         purpleChip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -463,15 +486,44 @@ public class GameScreen extends AppCompatActivity {
 
                     // make sure that the running count text is also updated
 
-                    TextView runningCount = findViewById(R.id.runningCountTextView);
-                    int runningCountVal = getTextViewIntegerContents(runningCount);
+                    // only use transmutation if there are only two cards
+                    if (! hitCard) {
+                        TextView runningCount = findViewById(R.id.runningCountTextView);
+                        int runningCountVal = getTextViewIntegerContents(runningCount);
 
-                    //ImageView card2 = generateDealerCards();
-                    ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
-                    ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
+                        //ImageView card2 = generateDealerCards();
+                        ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
+                        ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
 
-                    int cardValInt = transmuteCard(card1, card2);
-                    runningCount.setText(Integer.toString(cardValInt));
+                        int cardValInt = transmuteCard(card1, card2);
+                        runningCount.setText(Integer.toString(cardValInt));
+                    }
+
+
+                }
+                // two cases for joker
+                // we didn't "hit," so joker acts the same as transmutation
+                // OR we did hit, the first two cards changed, and the rest & RC change as well
+                else if (jokerPowerup) {
+
+                    if (! hitCard) {
+                        jokerAfterHit = false;
+
+                        TextView runningCount = findViewById(R.id.runningCountTextView);
+                        int runningCountVal = getTextViewIntegerContents(runningCount);
+
+                        //ImageView card2 = generateDealerCards();
+                        ImageView card1 = (ImageView) findViewById(R.id.playerCard1);
+                        ImageView card2 = (ImageView) findViewById(R.id.playerCard2);
+
+                        int cardValInt = transmuteCard(card1, card2);
+                        runningCount.setText(Integer.toString(cardValInt));
+                    }
+                    else {
+                        jokerAfterHit = true;
+                    }
+
+                    jokerUsed = true;
                 }
 
                 purpleChip.setEnabled(false); // can't call powerup again
