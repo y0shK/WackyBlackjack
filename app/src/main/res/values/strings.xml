@@ -17,15 +17,16 @@
 
     <string name="about_string">About:</string>
     <string name="about_content">
-        This game is a blackjack variant that provides the player with power-ups to balance the
-        implicit edge of the dealer. A list and explanation of each power-up can be found in
+        This game is a blackjack variant that provides the player with power-ups to balance against
+        the implicit edge of the dealer. A list and explanation of each power-up can be found in
         the "How to Play" section. I hope you have fun playing the game!
     </string>
     <string name="attribution_content">
         All images in this app are used either with explicit permission or a Creative Commons license.\n\n
         Title screen joker: drawsgood, itch.io\n https://drawsgood.itch.io/8bit-deck-card-assets (explicit permission)\n\n
         Playing cards: George Blackwell, itch.io\n https://georgeblackwell.itch.io/playing-cards-sprite-pack\ (Creative Commons)\n\n
-        Poker chips: mehrasaur, OpenGameArt\n https://opengameart.org/content/playing-card-assets-52-cards-deck-chips (Creative Commons)
+        Poker chips: mehrasaur, OpenGameArt\n https://opengameart.org/content/playing-card-\nassets-52-cards-deck-chips (Creative Commons)\n\n
+        Powerup icons: pbarry, itch.io\n https://pbarry.itch.io/ability-icons
     </string>
 
     <string name="attribution_string">Attributions:</string>
