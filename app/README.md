@@ -12,7 +12,7 @@ Clairvoyance (shows player the dealer's hand, allows player to hit)
 
 Sabotage (adds to the dealer's hand to force a bust)
 
-![alt text](https://github.com/y0shK/WackyBlackjack/blob/dev/app/src/main/res/drawable/sabotage_png.PNG)
+![alt text](https://github.com/y0shK/WackyBlackjack/blob/dev/app/src/main/res/drawable/sabotage_bugfix.PNG)
 
 Incineration (gets rid of the card that makes the player bust)
 
@@ -24,6 +24,4 @@ Transmutation (changes the first two cards only if no additional cards are hit)
 
 Joker (changes the first two cards regardless of additional cards hit)
 
-![alt text](https://github.com/y0shK/WackyBlackjack/blob/dev/app/src/main/res/drawable/joker_before.PNG)
-
-![alt text](https://github.com/y0shK/WackyBlackjack/blob/dev/app/src/main/res/drawable/joker_after.PNG)
+![alt text](https://github.com/y0shK/WackyBlackjack/blob/dev/app/src/main/res/drawable/joker_before.PNG) ![alt text](https://github.com/y0shK/WackyBlackjack/blob/dev/app/src/main/res/drawable/joker_after.PNG)
