@@ -626,15 +626,15 @@ public class GameScreen extends AppCompatActivity {
         // to make sure that ace works properly, check the textView for the current contents and then append the ace value
 
         if (cardValue1.contains("ace")) {
-            // bugfix: textViewIntVal + 11 must be < 21 - two aces should be 12, not 22
-            if ((textViewIntVal + 11) < 21) { // if adding an ace would not result in a bust
+            if ((textViewIntVal + 11) <= 21) { // if adding an ace would not result in a bust
+                // case of two aces is taken care of below
                 runningCount += 11; // then add the maximum value to the running count
             } else { // else, just add the minimum value and bust
                 runningCount += 1;
             }
         }
         if (cardValue2.contains("ace")) {
-            if ((textViewIntVal + 11) < 21) {
+            if ((textViewIntVal + 11) <= 21) {
                 runningCount += 11;
             } else { // > 21
                 runningCount += 1;
