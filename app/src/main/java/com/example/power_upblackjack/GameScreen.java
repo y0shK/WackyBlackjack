@@ -627,7 +627,7 @@ public class GameScreen extends AppCompatActivity {
 
         if (cardValue1.contains("ace")) {
             if ((textViewIntVal + 11) <= 21) { // if adding an ace would not result in a bust
-                // case of two aces is taken care of below
+                // case of two aces is taken care of below - only consider one ace
                 runningCount += 11; // then add the maximum value to the running count
             } else { // else, just add the minimum value and bust
                 runningCount += 1;
