@@ -18,30 +18,40 @@
     <string name="about_string">About:</string>
     <string name="about_content">
         This game is a blackjack variant that provides the player with power-ups to balance against
-        the implicit edge of the dealer. A list and explanation of each power-up can be found in
+        the implicit edge of the dealer. An explanation of each power-up can be found in
         the "How to Play" section. I hope you have fun playing the game!
     </string>
     <string name="attribution_content">
-        All images in this app are used either with explicit permission or a Creative Commons license.\n\n
+        All code in this app is either original work or adapted from Stack Overflow to fit the app\'s needs.\n
+        All artwork in this app is used either with explicit permission or a Creative Commons license.\n\n
         Title screen joker: drawsgood, itch.io\n https://drawsgood.itch.io/8bit-deck-card-assets (explicit permission)\n\n
-        Playing cards: George Blackwell, itch.io\n https://georgeblackwell.itch.io/playing-cards-sprite-pack\ (Creative Commons)\n\n
-        Poker chips: mehrasaur, OpenGameArt\n https://opengameart.org/content/playing-card-\nassets-52-cards-deck-chips (Creative Commons)\n\n
-        Powerup icons: pbarry, itch.io\n https://pbarry.itch.io/ability-icons
+        Playing cards: George Blackwell, itch.io\n https://georgeblackwell.itch.io/playing-cards-sprite-pack\ (Creative Commons Attribution v4.0)\n\n
+        Poker chips: mehrasaur, OpenGameArt\n https://opengameart.org/content/playing-card-\nassets-52-cards-deck-chips (Creative Commons, CC0 1.0)\n\n
+        Powerup icons: pbarry, itch.io\n https://pbarry.itch.io/ability-icons (explicit permission)
     </string>
+
+    <string name="how_to_play_title">
+        How to Play:
+    </string>
+
+    <string name="how_to_play_blackjack">
+        Get as close to 21 as possible. Don\'t go over, or you lose!
+    </string>
+
     <string name="clairvoyance_str">
-        Foresee the dealer\'s hand\nbefore you finish your turn.
+    Foresee the dealer\'s hand \nbefore you finish your turn. \nThen end whenever you\'d like!
     </string>
     <string name="sabotage_str">
-        Add a random value between 0 and 4 to the dealer\'s running count. Hopefully the dealer busts!
+        Add a random value (0 to 4)\nto the dealer\'s running count. \nHopefully the dealer busts!
     </string>
     <string name="incineration_str">
-        Eliminate the card that would otherwise make you bust. Think of this as carte blanche to spam the "hit" button!
+        Throw away the last card if you bust. \nThink of this as carte blanche \nto take all the cards you\'d like!
     </string>
     <string name="transmutation_str">
-        Change your hand entirely. Be careful - you can only swap hands before you hit or stand!
+        Change your hand entirely. \nBe careful - you can only swap \nbefore you hit or stand!
     </string>
     <string name="joker_str">
-        Change your hand entirely. You can swap hands after you hit, but you might just bust…
+        Change your first two cards. \nYou can swap them after \nyou take more cards, \nbut you might just bust…
     </string>
 
 
