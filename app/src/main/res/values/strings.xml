@@ -28,6 +28,22 @@
         Poker chips: mehrasaur, OpenGameArt\n https://opengameart.org/content/playing-card-\nassets-52-cards-deck-chips (Creative Commons)\n\n
         Powerup icons: pbarry, itch.io\n https://pbarry.itch.io/ability-icons
     </string>
+    <string name="clairvoyance_str">
+        Foresee the dealer\'s hand\nbefore you finish your turn.
+    </string>
+    <string name="sabotage_str">
+        Add a random value between 0 and 4 to the dealer\'s running count. Hopefully the dealer busts!
+    </string>
+    <string name="incineration_str">
+        Eliminate the card that would otherwise make you bust. Think of this as carte blanche to spam the "hit" button!
+    </string>
+    <string name="transmutation_str">
+        Change your hand entirely. Be careful - you can only swap hands before you hit or stand!
+    </string>
+    <string name="joker_str">
+        Change your hand entirely. You can swap hands after you hit, but you might just bust…
+    </string>
+
 
     <string name="attribution_string">Attributions:</string>
     <string name="attribution_header"></string>
