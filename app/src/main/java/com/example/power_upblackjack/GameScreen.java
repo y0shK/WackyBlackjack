@@ -15,6 +15,7 @@ import android.widget.TextView;
 import java.util.Locale;
 import java.util.Random;
 
+@SuppressWarnings("unused")
 public class GameScreen extends AppCompatActivity {
 
     int clickCount = 1; // click count for the first row of cards

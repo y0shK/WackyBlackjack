@@ -23,11 +23,11 @@
     </string>
     <string name="attribution_content">
         Most code in this app is original work, and the rest is adapted from Stack Overflow links or the Android docs.
-        All artwork in this app is used with explicit permission or a Creative Commons license.\n\n
-        Title screen joker: drawsgood, itch.io\n https://drawsgood.itch.io/8bit-deck-card-assets (explicit permission)\n\n
+        All artwork in this app, except the app icon, is used without modification with either explicit permission or a Creative Commons license. The app icon is adapted from one of the images below.\n\n
+        Title screen joker: drawsgood, itch.io\n https://drawsgood.itch.io/8bit-deck-card-assets (permission)\n\n
         Playing cards: George Blackwell, itch.io\n https://georgeblackwell.itch.io/playing-cards-sprite-pack\ (Creative Commons Attribution v4.0)\n\n
         Poker chips: mehrasaur, OpenGameArt\n https://opengameart.org/content/playing-card-\nassets-52-cards-deck-chips (CC0 1.0)\n\n
-        Powerup icons: pbarry, itch.io\n https://pbarry.itch.io/ability-icons (explicit permission)
+        Powerup icons: pbarry, itch.io\n https://pbarry.itch.io/ability-icons (permission)
     </string>
 
     <string name="how_to_play_title">
