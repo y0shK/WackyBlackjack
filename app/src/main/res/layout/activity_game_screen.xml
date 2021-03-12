@@ -15,7 +15,8 @@
         android:layout_marginBottom="96dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/back_red_basic" />
+        app:srcCompat="@drawable/back_red_basic"
+        android:contentDescription="@string/playerCard1Content" />
 
     <ImageView
         android:id="@+id/playerCard2"
@@ -25,7 +26,8 @@
         android:layout_marginBottom="96dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/playerCard1"
-        app:srcCompat="@drawable/back_red_basic" />
+        app:srcCompat="@drawable/back_red_basic"
+        android:contentDescription="@string/playerCard2Content"/>
 
     <TextView
         android:id="@+id/runningCountTextView"
@@ -49,7 +51,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/removed_bg_red_chip" />
+        app:srcCompat="@drawable/removed_bg_red_chip"
+        android:contentDescription="@string/hit_card"/>
 
     <TextView
         android:id="@+id/hitPokerChipTextView"
@@ -72,7 +75,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/removed_bg_blue_chip" />
+        app:srcCompat="@drawable/removed_bg_blue_chip"
+        android:contentDescription="@string/stand_card"/>
 
     <TextView
         android:id="@+id/standPokerChipTextView"
@@ -97,7 +101,8 @@
         app:layout_constraintBottom_toTopOf="@+id/dealerTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/back_red_basic" />
+        app:srcCompat="@drawable/back_red_basic"
+        android:contentDescription="@string/cardStackContent"/>
 
     <TextView
         android:id="@+id/dealerTextView"
@@ -106,7 +111,7 @@
         android:layout_marginStart="128dp"
         android:layout_marginTop="180dp"
         android:layout_marginEnd="128dp"
-        android:text="0"
+        android:text="@string/zero_count"
         android:textColor="@color/black"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -121,7 +126,8 @@
         app:layout_constraintBottom_toTopOf="@+id/runningCountTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/purple_chip_remove_bg" />
+        app:srcCompat="@drawable/purple_chip_remove_bg"
+        android:contentDescription="@string/powerupButton" />
 
     <ImageView
         android:id="@+id/replacePowerup"
@@ -131,7 +137,8 @@
         app:layout_constraintBottom_toTopOf="@+id/runningCountTextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/back_blue_basic_white" />
+        app:srcCompat="@drawable/back_blue_basic_white"
+        android:contentDescription="@string/powerupContent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

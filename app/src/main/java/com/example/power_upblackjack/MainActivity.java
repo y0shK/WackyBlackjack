@@ -3,12 +3,8 @@ package com.example.power_upblackjack;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import android.app.ActionBar;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.View;
 import android.view.Window;
 
@@ -40,11 +36,6 @@ public class MainActivity extends AppCompatActivity {
     public void startGame(View view) {
         Intent playGameIntent = new Intent(this, GameScreen.class);
         startActivity(playGameIntent);
-    }
-
-    public void goToOptions(View view) {
-        Intent optionsIntent = new Intent(this, Options.class);
-        startActivity(optionsIntent);
     }
 
     public void howToPlay(View view) {

@@ -15,7 +15,8 @@
         android:layout_marginTop="102dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/clairvoyance" />
+        app:srcCompat="@drawable/clairvoyance"
+        android:contentDescription="@string/clairvoyanceContent"/>
 
     <TextView
         android:id="@+id/clairvoyance_explanation"
@@ -37,7 +38,8 @@
         android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/clairvoyance_image"
-        app:srcCompat="@drawable/sabotage" />
+        app:srcCompat="@drawable/sabotage"
+        android:contentDescription="@string/sabotageContent"/>
 
     <ImageView
         android:id="@+id/incineration_image"
@@ -47,7 +49,8 @@
         android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sabotage_image"
-        app:srcCompat="@drawable/flames" />
+        app:srcCompat="@drawable/flames"
+        android:contentDescription="@string/incinerationContent" />
 
     <ImageView
         android:id="@+id/transmutation_image"
@@ -57,7 +60,8 @@
         android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/incineration_image"
-        app:srcCompat="@drawable/transmutation" />
+        app:srcCompat="@drawable/transmutation"
+        android:contentDescription="@string/transmutationContent"/>
 
     <ImageView
         android:id="@+id/joker_image"
@@ -67,7 +71,8 @@
         android:layout_marginTop="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/transmutation_image"
-        app:srcCompat="@drawable/joker_skull" />
+        app:srcCompat="@drawable/joker_skull"
+        android:contentDescription="@string/jokerContent"/>
 
     <TextView
         android:id="@+id/textView2"

@@ -13,9 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "Convert2Lambda"})
 public class GameScreen extends AppCompatActivity {
 
     int clickCount = 1; // click count for the first row of cards
@@ -114,6 +115,7 @@ public class GameScreen extends AppCompatActivity {
         return transmutationRunningCount;
     }
 
+    @SuppressWarnings("Convert2Lambda")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -259,7 +261,7 @@ public class GameScreen extends AppCompatActivity {
 
         });
 
-        ImageView blueChip = (ImageView) findViewById(R.id.bluePokerChipNoBg);
+        ImageView blueChip = findViewById(R.id.bluePokerChipNoBg);
         blueChip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -272,15 +274,11 @@ public class GameScreen extends AppCompatActivity {
 
                 calledFromStand = true;
                 boolean shouldShowDealerCards;
-                int sabotageAddVal = 0;
+                int sabotageAddVal;
 
                 // clairvoyance logic
-                if (clairvoyanceUsed) {
-                    shouldShowDealerCards = false;
-                }
-                else { // the clairvoyance powerup is not used - generate new cards
-                    shouldShowDealerCards = true;
-                }
+                // the clairvoyance powerup is not used - generate new cards
+                shouldShowDealerCards = !clairvoyanceUsed;
 
                 // if sabotage is used, create cards here, not on button click
                 // the user shouldn't sabotage and know cards ahead of time
@@ -485,6 +483,8 @@ public class GameScreen extends AppCompatActivity {
                             // https://stackoverflow.com/questions/9144215/how-to-make-a-button-press-once-and-then-not-pressable-anymore
                             blueChip.setEnabled(false);
                             redChip.setEnabled(false);
+
+                            jokerBust = true;
                         }
                     }
 
@@ -508,10 +508,10 @@ public class GameScreen extends AppCompatActivity {
 
         // https://stackoverflow.com/questions/36236181/how-to-remove-title-bar-from-the-android-activity
         try {
-            this.getSupportActionBar().hide();
+            Objects.requireNonNull(this.getSupportActionBar()).hide();
         }
-        catch (NullPointerException ignored) {
-
+        catch (NullPointerException e) {
+            e.printStackTrace();
         }
 
         super.onStart();

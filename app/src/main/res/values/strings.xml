@@ -3,6 +3,7 @@
     <string name="play_game_button">Play Game</string>
     <string name="options">Options</string>
     <string name="running_count">0</string>
+    <string name="zero_count">0</string>
     <string name="hit_card">Hit</string>
     <string name="stand_card">Stand</string>
     <string name="new_card_id">newID</string>
@@ -57,4 +58,18 @@
     <string name="attribution_string">Attributions:</string>
     <string name="attribution_header"></string>
     <string name="app_subtitle">A Blackjack Variant</string>
+
+    <string name="playerCard1Content">Player card 1</string>
+    <string name="playerCard2Content">Player card 2</string>
+    <string name="cardStackContent">Card stack</string>
+    <string name="powerupButton">Power-up button</string>
+    <string name="powerupContent">Power-up</string>
+
+    <string name="clairvoyanceContent">Clairvoyance</string>
+    <string name="sabotageContent">Sabotage</string>
+    <string name="incinerationContent">Incineration</string>
+    <string name="transmutationContent">Transmutation</string>
+    <string name="jokerContent">Joker</string>
+
+    <string name="redJokerImg">Red joker image</string>
 </resources>
