@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 
+import java.util.Objects;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -20,17 +22,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutIDMain);
+        ConstraintLayout cl = findViewById(R.id.constraintLayoutIDMain);
 
         // set light green hex code in colors.xml
         cl.setBackgroundColor(getResources().getColor(R.color.poker_green));
 
         // hide action bar to provide more prominence for "Wacky Blackjack" title
-        getSupportActionBar().hide();
-
-        //textColor();
-        //setStatusBarColor();
-        //getActionBar()/* or getSupportActionBar() */.setTitle(Html.fromHtml("<font color=\"black\">" + getString(R.string.app_name) + "</font>"));
+        Objects.requireNonNull(getSupportActionBar()).hide();
     }
 
     public void startGame(View view) {
@@ -48,11 +46,5 @@ public class MainActivity extends AppCompatActivity {
         startActivity(appInfoIntent);
     }
 
-
-    // https://stackoverflow.com/questions/22192291/how-to-change-the-status-bar-color-in-android?rq=1
-    public void setStatusBarColor() {
-        Window window = this.getWindow();
-        window.setStatusBarColor(getResources().getColor(R.color.black));
-    }
 
 }

@@ -56,7 +56,7 @@
     </string>
 
     <string name="attribution_string">Attributions:</string>
-    <string name="attribution_header"></string>
+    <string name="attribution_header" />
     <string name="app_subtitle">A Blackjack Variant</string>
 
     <string name="playerCard1Content">Player card 1</string>

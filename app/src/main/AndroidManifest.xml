@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PowerUpBlackjack"
         android:fullBackupContent="@xml/backup_descriptor">
-        <activity android:name=".AppInfo"></activity>
+        <activity android:name=".AppInfo" />
         <activity android:name=".HowToPlay" />
         <activity android:name=".Options" />
         <activity android:name=".GameScreen" />

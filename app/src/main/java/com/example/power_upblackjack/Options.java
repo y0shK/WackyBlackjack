@@ -6,6 +6,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import android.content.Intent;
 import android.os.Bundle;
 
+import java.util.Objects;
+
 public class Options extends AppCompatActivity {
 
     @Override
@@ -21,9 +23,9 @@ public class Options extends AppCompatActivity {
         super.onStart();
 
         // hide action bar to provide more prominence for "Wacky Blackjack" title
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
-        ConstraintLayout cl = (ConstraintLayout) findViewById(R.id.constraintLayoutIDOptions);
+        ConstraintLayout cl = findViewById(R.id.constraintLayoutIDOptions);
 
         // set light green hex code in colors.xml
         cl.setBackgroundColor(getResources().getColor(R.color.poker_green));
