@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -349,6 +352,7 @@ public class GameScreen extends AppCompatActivity {
                 gameCondition.setY((float) (purpleChip.getY() * 1.45));
                 gameCondition.setTextColor(getResources().getColor(R.color.black));
 
+
                 ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
                 cl.addView(gameCondition);
 
@@ -422,6 +426,14 @@ public class GameScreen extends AppCompatActivity {
                 // the first boolean, clairvoyanceUsed, is initially false and becomes true onClick
                 // the second boolean, clairvoyanceDone, is initially false, and becomes true onClick
                 // to permit the Stand button to end the game
+
+                Animation fadeOut = new AlphaAnimation(1, 0);  // the 1, 0 here notifies that we want the opacity to go from opaque (1) to transparent (0)
+                fadeOut.setInterpolator(new AccelerateInterpolator());
+                fadeOut.setStartOffset(500); // Start fading out after 500 milli seconds
+                fadeOut.setDuration(1000); // Fadeout duration should be 1000 milli seconds
+                powerupImage.startAnimation(fadeOut);
+
+                // powerupImage.setVisibility(View.INVISIBLE);
 
                 if (clairvoyance) {
                     // needs to come first so generateDealerCards actually displays the cards
