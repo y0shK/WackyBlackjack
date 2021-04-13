@@ -249,7 +249,7 @@ public class GameScreen extends AppCompatActivity {
                     // remove the amount of the card from the running count
                     // and auto-hit the stand button
 
-                    if (incineration) {
+                    if (incineration && incinerationUsed) { // make sure that incineration is actually used
                         runningCountStr = getString(R.string.incineration_player_count, runningCount, temp);
                         runningCount -= temp;
 
@@ -519,6 +519,13 @@ public class GameScreen extends AppCompatActivity {
 
                             gameCondition.setText(R.string.lose_string);
                             cl.addView(gameCondition);
+
+                            Animation fadeIn = new AlphaAnimation(0, 1);
+                            fadeIn.setInterpolator(new AccelerateInterpolator());
+                            fadeIn.setStartOffset(400);
+                            fadeIn.setDuration(400);
+
+                            gameCondition.startAnimation(fadeIn);
 
                             // joker led to bust
                             // the game is over
