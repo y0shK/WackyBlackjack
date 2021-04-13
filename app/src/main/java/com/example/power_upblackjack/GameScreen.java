@@ -269,6 +269,8 @@ public class GameScreen extends AppCompatActivity {
                         gameCondition.setText(R.string.lose_string);
                         cl.addView(gameCondition);
 
+                        gameCondition.startAnimation(fadeIn);
+
                         // once stand is chosen,
                         // the game is over one way or another
                         // https://stackoverflow.com/questions/9144215/how-to-make-a-button-press-once-and-then-not-pressable-anymore
@@ -381,7 +383,7 @@ public class GameScreen extends AppCompatActivity {
 
                 ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
                 cl.addView(gameCondition);
-                gameCondition.startAnimation(fadeIn);
+                gameCondition.startAnimation(fadeIn); // https://stackoverflow.com/questions/11444051/textview-animation-fade-in-wait-fade-out
 
                 // if the clairvoyance powerup is used, the user can continue to hit or stand
                 // otherwise, the game must end
