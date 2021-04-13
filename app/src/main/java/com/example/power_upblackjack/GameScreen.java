@@ -84,7 +84,15 @@ public class GameScreen extends AppCompatActivity {
 
                 newDealerCard.setImageResource(newImages.getResourceId(choice, R.drawable.back_red_basic)); // random png
 
+                // https://stackoverflow.com/questions/20782260/making-a-smooth-fade-out-for-imageview-in-android?noredirect=1&lq=1
+                Animation fadeIn = new AlphaAnimation(0, 1);
+                fadeIn.setInterpolator(new AccelerateInterpolator());
+                fadeIn.setStartOffset(200);
+                fadeIn.setDuration(400);
+
                 cl.addView(newDealerCard);
+
+                newDealerCard.startAnimation(fadeIn);
 
                 newDealerCard.setX(dealerXCoor + dealerCardAddMultiplier * distanceCards);
                 newDealerCard.setY(dealerYCoor);
@@ -193,7 +201,16 @@ public class GameScreen extends AppCompatActivity {
                 int choice = (int) (Math.random() * newImages.length());
 
                 newCard.setImageResource(newImages.getResourceId(choice, R.drawable.back_red_basic)); // random png
+
+                // https://stackoverflow.com/questions/20782260/making-a-smooth-fade-out-for-imageview-in-android?noredirect=1&lq=1
+                Animation fadeIn = new AlphaAnimation(0, 1);
+                fadeIn.setInterpolator(new AccelerateInterpolator());
+                fadeIn.setStartOffset(200);
+                fadeIn.setDuration(400);
+
                 cl.addView(newCard);
+
+                newCard.startAnimation(fadeIn);
 
                 // https://stackoverflow.com/questions/4768969/how-do-i-change-textview-value-inside-java-code
                 // before this block of code, the TextView shows the combined value of the initial two cards given
@@ -331,6 +348,9 @@ public class GameScreen extends AppCompatActivity {
                 if (finalPlayerCount > 21) {
                     // if the player busts, regardless of the dealer's hand, the player loses
                     gameCondition.setText(R.string.lose_string);
+                    // can't access power-up or hit anymore
+                    redChip.setEnabled(false);
+                    purpleChip.setEnabled(false);
                 }
                 else if (finalDealerCount > 21) { // player count is definitely <= 21
                     gameCondition.setText(R.string.win_string);
@@ -347,6 +367,12 @@ public class GameScreen extends AppCompatActivity {
                     }
                 }
 
+                // https://stackoverflow.com/questions/20782260/making-a-smooth-fade-out-for-imageview-in-android?noredirect=1&lq=1
+                Animation fadeIn = new AlphaAnimation(0, 1);
+                fadeIn.setInterpolator(new AccelerateInterpolator());
+                fadeIn.setStartOffset(400);
+                fadeIn.setDuration(400);
+
                 // experimentally defined
                 gameCondition.setX((float) (purpleChip.getX() * 1.35));
                 gameCondition.setY((float) (purpleChip.getY() * 1.45));
@@ -355,6 +381,7 @@ public class GameScreen extends AppCompatActivity {
 
                 ConstraintLayout cl = findViewById(R.id.constraintLayoutID);
                 cl.addView(gameCondition);
+                gameCondition.startAnimation(fadeIn);
 
                 // if the clairvoyance powerup is used, the user can continue to hit or stand
                 // otherwise, the game must end
@@ -427,13 +454,14 @@ public class GameScreen extends AppCompatActivity {
                 // the second boolean, clairvoyanceDone, is initially false, and becomes true onClick
                 // to permit the Stand button to end the game
 
+                // https://stackoverflow.com/questions/20782260/making-a-smooth-fade-out-for-imageview-in-android?noredirect=1&lq=1
                 Animation fadeOut = new AlphaAnimation(1, 0);  // the 1, 0 here notifies that we want the opacity to go from opaque (1) to transparent (0)
                 fadeOut.setInterpolator(new AccelerateInterpolator());
-                fadeOut.setStartOffset(500); // Start fading out after 500 milli seconds
-                fadeOut.setDuration(1000); // Fadeout duration should be 1000 milli seconds
+                fadeOut.setStartOffset(250); // Start fading out after 500 milli seconds
+                fadeOut.setDuration(500); // Fadeout duration should be 1000 milli seconds
                 powerupImage.startAnimation(fadeOut);
 
-                // powerupImage.setVisibility(View.INVISIBLE);
+                powerupImage.setVisibility(View.INVISIBLE);
 
                 if (clairvoyance) {
                     // needs to come first so generateDealerCards actually displays the cards
