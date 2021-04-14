@@ -1,0 +1,4 @@
+#Tue Apr 13 23:06:52 PDT 2021
+base.0=C\:\\Users\\ynkar\\AndroidStudioProjects\\PowerUpBlackjack\\benchmark\\build\\intermediates\\dex\\releaseAndroidTest\\mergeDexReleaseAndroidTest\\classes.dex
+path.0=classes.dex
+renamed.0=classes.dex

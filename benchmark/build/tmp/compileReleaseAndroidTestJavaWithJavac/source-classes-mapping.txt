@@ -1,0 +1,5 @@
+com/example/benchmark/ExampleBenchmark.java
+ com.example.benchmark.ExampleBenchmark
+ com.example.benchmark.ExampleBenchmark$MyBenchmark
+com/example/benchmark/test/BuildConfig.java
+ com.example.benchmark.test.BuildConfig
